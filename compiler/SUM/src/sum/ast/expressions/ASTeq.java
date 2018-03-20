@@ -1,0 +1,18 @@
+package sum.ast.expressions;
+
+import sum.interfaces.expressions.IASTeq;
+import sum.interfaces.iast.IASTexpression;
+import sum.interfaces.iast.IASTvisitor;
+
+public class ASTeq extends ASTbinOp implements IASTeq{
+
+	public ASTeq(IASTexpression arg1, IASTexpression arg2) {
+		super(arg1, arg2);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void accept(IASTvisitor visitor) {
+		visitor.visit(this);
+	}
+}
