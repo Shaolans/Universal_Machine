@@ -18,17 +18,18 @@ public class TestCompiler {
 		sum.compiler.Compiler c = new sum.compiler.Compiler();
 		//c.visit(p);
 		c.compile(p,"out\\test2.um");
+		/*
 		try {
 			FileInputStream is = new FileInputStream(new File("out\\test2.um"));
 			byte b[] = new byte[12];
 			is.read(b);
 			for(int i = 0; i < 12; i++) {
-				//System.out.println(b[i]);
+				System.out.println(b[i]);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 }

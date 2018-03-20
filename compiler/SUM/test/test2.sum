@@ -1,2 +1,4 @@
 print "salut amel !\n"
-print "J'arrive a faire marcher le compilateur,\n du moins pour printer des strings\n"
+print "J'arrive a faire marcher le compilateur,\ndu moins pour printer des strings\n"
+print 713705
+print "\n"

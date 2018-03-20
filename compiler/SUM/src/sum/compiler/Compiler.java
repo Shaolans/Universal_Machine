@@ -85,7 +85,7 @@ public class Compiler implements IASTvisitor {
 	public void writeSpecialOperation(int regA, int value) {
 		byte operation[] = new byte[4];
 		byte val = 0;
-		val = (byte)(13 << 4);
+		val = (byte)(CompilerInstruction.ORTHOGRAPHY << 4);
 		val += (byte)((regA & 0x00000004)==0?0:8);
 		val += (byte)((regA & 0x00000002)==0?0:4);
 		val += (byte)((regA & 0x00000001)==0?0:2);
@@ -130,22 +130,31 @@ public class Compiler implements IASTvisitor {
 	public void visit(IASTprint iast) {
 		if(print) System.out.println("Print");
 		
-		if(iast.getArg() instanceof IASTconstString) {
-			String s = ((IASTconstString)iast.getArg()).getString();
+		IASTstatement expr = iast.getArg();
+		
+		if(expr instanceof IASTconstString) {
+			String s = ((IASTconstString)expr).getString();
 			for(int i = 0; i < s.length(); i++) {
 				if(i+1 < s.length() && s.charAt(i)=='\\' && s.charAt(i+1)=='n') {
-					writeSpecialOperation(0, (int)'\n');
-					writeOperation(10, 0, 0, 0);
+					writeSpecialOperation(CompilerInstruction.COND_MOV, (int)'\n');
+					writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 					i++;
 				}else {
-					writeSpecialOperation(0, (int)s.charAt(i));
-					writeOperation(10, 0, 0, 0);
+					writeSpecialOperation(CompilerInstruction.COND_MOV, (int)s.charAt(i));
+					writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 				}
 				
 			}
 			
-		} else if(iast.getArg() instanceof IASTexpression) {
-			System.out.println("AUTRE");
+		} else if(expr instanceof IASTconstInteger) {
+			String s = Integer.toString(((IASTconstInteger)expr).getInteger());
+			for(int i = 0; i < s.length(); i++) {
+				writeSpecialOperation(CompilerInstruction.COND_MOV, (int)s.charAt(i));
+				writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
+			}
+			
+		} else if (expr instanceof IASTexpression) {
+			
 		}
 	}
 
