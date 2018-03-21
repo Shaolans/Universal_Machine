@@ -31,7 +31,7 @@ public class ASTfactory implements IASTfactory{
 	}
 
 	@Override
-	public IASTstatement newAlternative(IASTexpression cond, IASTstatement cons, IASTstatement alt) {
+	public IASTstatement newAlternative(IASTexpression cond, List<IASTstatement> cons, List<IASTstatement> alt) {
 		return new ASTalternative(cond, cons, alt);
 	}
 

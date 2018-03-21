@@ -1,5 +1,7 @@
 package sum.ast.statements;
 
+import java.util.List;
+
 import sum.ast.ast.ASTstatement;
 import sum.interfaces.iast.IASTexpression;
 import sum.interfaces.iast.IASTstatement;
@@ -8,11 +10,11 @@ import sum.interfaces.statements.IASTalternative;
 
 public class ASTalternative extends ASTstatement implements IASTalternative{
 	private IASTexpression condition;
-	private IASTstatement consequence;
-	private IASTstatement alternative;
+	private List<IASTstatement> consequence;
+	private List<IASTstatement> alternative;
 	
 	
-	public ASTalternative(IASTexpression condition, IASTstatement consequence, IASTstatement alternative) {
+	public ASTalternative(IASTexpression condition, List<IASTstatement> consequence, List<IASTstatement> alternative) {
 		this.condition = condition;
 		this.consequence = consequence;
 		this.alternative = alternative;
@@ -24,12 +26,12 @@ public class ASTalternative extends ASTstatement implements IASTalternative{
 	}
 
 	@Override
-	public IASTstatement getConsequence() {
+	public List<IASTstatement> getConsequence() {
 		return consequence;
 	}
 
 	@Override
-	public IASTstatement getAlternative() {
+	public List<IASTstatement> getAlternative() {
 		return alternative;
 	}
 

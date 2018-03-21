@@ -9,7 +9,7 @@ stmt returns [sum.interfaces.iast.IASTstatement node]
 	| 'let' var=IDENT '='? val=expr? #Binding
 	| 'print' val=expr #Print
 	| 'scan' var=IDENT #Scan
-	| 'if' cond=expr 'then' '{' cons=stmt '}' 'else' '{' alt=stmt '}' #Alternative
+	| 'if' cond=expr 'then' '{' (cons+=stmt ';'?)* '}' 'else' '{' (alt+=stmt ';'?)* '}' #Alternative
 	;
 	
 expr returns [sum.interfaces.iast.IASTexpression node]

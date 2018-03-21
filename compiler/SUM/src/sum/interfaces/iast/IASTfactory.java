@@ -5,7 +5,7 @@ import java.util.List;
 public interface IASTfactory {
 	public IASTprogram newProgram(List<IASTstatement> statements);
 	
-	public IASTstatement newAlternative(IASTexpression cond, IASTstatement cons, IASTstatement alt);
+	public IASTstatement newAlternative(IASTexpression cond, List<IASTstatement> cons, List<IASTstatement> alt);
 	public IASTstatement newBinding(String name, IASTexpression expr);
 	public IASTstatement newPrint(IASTstatement stmt);
 	public IASTstatement newScan(String name);

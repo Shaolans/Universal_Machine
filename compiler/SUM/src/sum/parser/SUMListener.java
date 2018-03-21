@@ -66,7 +66,16 @@ public class SUMListener implements SUMgrammarListener {
 
 	@Override
 	public void exitAlternative(AlternativeContext ctx) {
-		ctx.node = factory.newAlternative(ctx.cond.node, ctx.cons.node, ctx.alt.node);
+		List<IASTstatement> cons = new ArrayList<IASTstatement>();
+		List<IASTstatement> alt = new ArrayList<IASTstatement>();
+		for(StmtContext st: ctx.cons) {
+			cons.add(st.node);
+		}
+		for(StmtContext st: ctx.alt) {
+			alt.add(st.node);
+		}
+		
+		ctx.node = factory.newAlternative(ctx.cond.node, cons, alt);
 	}
 
 	@Override
