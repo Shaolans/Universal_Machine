@@ -178,7 +178,13 @@ public class Compiler implements IASTvisitor {
 					writeSpecialOperation(0, (int)s.charAt(i));
 					writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 				}
-				
+			}
+			
+		} else if (expr instanceof IASTconstInteger) {
+			String s = Integer.toString(((IASTconstInteger)expr).getInteger());
+			for(int i = 0; i < s.length(); i++) {
+				writeSpecialOperation(0, (int)s.charAt(i));
+				writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 			}
 			
 		} else if (expr instanceof IASTexpression) {
@@ -187,7 +193,7 @@ public class Compiler implements IASTvisitor {
 			((IASTexpression)expr).accept(this, indcontext);
 			fetchIntoReg(indcontext, 0);
 			writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
-		}
+		} 
 	}
 
 	@Override
