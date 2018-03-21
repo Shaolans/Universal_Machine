@@ -12,7 +12,7 @@ public class ASTmul extends ASTbinOp implements IASTmul{
 	}
 
 	@Override
-	public void accept(IASTvisitor visitor) {
-		visitor.visit(this);
+	public void accept(IASTvisitor visitor, int context) {
+		visitor.visit(this, context);
 	}
 }

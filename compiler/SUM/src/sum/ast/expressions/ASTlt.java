@@ -11,8 +11,8 @@ public class ASTlt extends ASTbinOp implements IASTlt{
 	}
 	
 	@Override
-	public void accept(IASTvisitor visitor) {
-		visitor.visit(this);
+	public void accept(IASTvisitor visitor, int context) {
+		visitor.visit(this, context);
 	}
 
 }

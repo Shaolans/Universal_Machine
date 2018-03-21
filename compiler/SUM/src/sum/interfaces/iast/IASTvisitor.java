@@ -19,23 +19,23 @@ import sum.interfaces.statements.IASTprint;
 import sum.interfaces.statements.IASTscan;
 
 public interface IASTvisitor {
-	public void visit(IASTprogram iast);
-	public void visit(IASTalternative iast);
-	public void visit(IASTbinding iast);
-	public void visit(IASTprint iast);
-	public void visit(IASTscan iast);
+	public void visit(IASTprogram iast, int context);
+	public void visit(IASTalternative iast, int context);
+	public void visit(IASTbinding iast, int context);
+	public void visit(IASTprint iast, int context);
+	public void visit(IASTscan iast, int context);
 	
-	public void visit(IASTadd iast);
-	public void visit(IASTmul iast);
-	public void visit(IASTdiv iast);
-	public void visit(IASTeq iast);
-	public void visit(IASTgt iast);
-	public void visit(IASTlt iast);
-	public void visit(IASTor iast);
-	public void visit(IASTand iast);
-	public void visit(IASTnot iast);
+	public void visit(IASTadd iast, int context);
+	public void visit(IASTmul iast, int context);
+	public void visit(IASTdiv iast, int context);
+	public void visit(IASTeq iast, int context);
+	public void visit(IASTgt iast, int context);
+	public void visit(IASTlt iast, int context);
+	public void visit(IASTor iast, int context);
+	public void visit(IASTand iast, int context);
+	public void visit(IASTnot iast, int context);
 	
-	public void visit(IASTconstInteger iast);
-	public void visit(IASTconstString iast);
-	public void visit(IASTident iast);
+	public void visit(IASTconstInteger iast, int context);
+	public void visit(IASTconstString iast, int context);
+	public void visit(IASTident iast, int context);
 }

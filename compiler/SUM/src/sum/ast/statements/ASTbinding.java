@@ -21,7 +21,7 @@ public class ASTbinding extends ASTstatement implements IASTbinding {
 		return expr;
 	}
 	@Override
-	public void accept(IASTvisitor visitor) {
-		visitor.visit(this);
+	public void accept(IASTvisitor visitor, int context) {
+		visitor.visit(this, context);
 	}
 }

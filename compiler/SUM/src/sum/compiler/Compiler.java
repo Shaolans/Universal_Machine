@@ -30,6 +30,7 @@ import sum.interfaces.statements.IASTscan;
 
 public class Compiler implements IASTvisitor {
 	private static final boolean print = false;
+	private static final int NO_CONTEXT = -1;
 	private int indVar;
 	private Map<String, Integer> env;
 	private FileOutputStream fos;
@@ -47,10 +48,19 @@ public class Compiler implements IASTvisitor {
 			e.printStackTrace();
 		}
 		
-		this.visit(iast);
+		this.visit(iast, NO_CONTEXT);
 		
-		writeOperation(7, 0, 0, 0);
+		/*writeSpecialOperation(0, 33);
+		writeSpecialOperation(7, 10);
+		writeOperation(CompilerInstruction.ALLOCATION, 0, 7, 7);
+		writeOperation(CompilerInstruction.ARRAY_AMEND, 7, 6, 0);
 		
+		writeSpecialOperation(7, 1);
+		writeSpecialOperation(6, 0);
+		writeOperation(CompilerInstruction.ARRAY_INDEX, 0, 7, 6);
+		writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);*/
+		
+		writeOperation(CompilerInstruction.HALT, 0, 0, 0);
 		try {
 			fos.close();
 		} catch (IOException e) {
@@ -60,6 +70,11 @@ public class Compiler implements IASTvisitor {
 	}
 	
 	public void writeOperation(int op, int regA, int regB, int regC) {
+		if(op == 1) System.out.println("REG["+regA+"] = "+"Array[REG["+regB+"][REG["+regC+"]]");
+		if(op == 2) System.out.println("Array[REG["+regA+"][REG["+regB+"]] = REG["+regC+"]");
+		if(op == 3) System.out.println("REG["+regA+"] = "+"REG["+regB+"] + REG["+regC+"]");
+		if(op == 8) System.out.println("ALLOC "+(indVar-1)+" SIZE REG["+regC+"]");
+		if(op == 10) System.out.println("PRINT");
 		byte operation[] = new byte[4];
 		operation[0] = (byte)(op << 4);
 		operation[1] = 0;
@@ -83,6 +98,7 @@ public class Compiler implements IASTvisitor {
 	}
 	
 	public void writeSpecialOperation(int regA, int value) {
+		System.out.println("CHARGE REG["+regA+"] = "+value);
 		byte operation[] = new byte[4];
 		byte val = 0;
 		val = (byte)(CompilerInstruction.ORTHOGRAPHY << 4);
@@ -102,32 +118,50 @@ public class Compiler implements IASTvisitor {
 		
 	}
 	
+	public void fetchIntoReg(int i, int reg) {
+		writeSpecialOperation(7, i);
+		writeSpecialOperation(6, 0);
+		writeOperation(CompilerInstruction.ARRAY_INDEX, reg, 7, 6);
+	}
+	
+	public void putIntoArray(int i, int reg) {
+		writeSpecialOperation(7, i);
+		writeSpecialOperation(6, 0);
+		writeOperation(CompilerInstruction.ARRAY_AMEND, 7, 6, reg);
+	}
+	
+	public void allocateVar() {
+		writeSpecialOperation(7, 1);
+		writeOperation(CompilerInstruction.ALLOCATION, 0, 7, 7);
+	}
+	
 	@Override
-	public void visit(IASTprogram iast) {
+	public void visit(IASTprogram iast, int context) {
 		
 		for(IASTstatement stmts: iast.getProgram()) {
 			if(print) System.out.println("Stmts du programme");
-			stmts.accept(this);
+			stmts.accept(this, context);
 		}
 		
 	}
 
 	@Override
-	public void visit(IASTalternative iast) {
+	public void visit(IASTalternative iast, int context) {
 		if(print) System.out.println("If");
-		iast.getCondition().accept(this);
-		iast.getConsequence().accept(this);
-		iast.getAlternative().accept(this);
+		iast.getCondition().accept(this, context);
+		iast.getConsequence().accept(this, context);
+		iast.getAlternative().accept(this, context);
 	}
 
 	@Override
-	public void visit(IASTbinding iast) {
+	public void visit(IASTbinding iast, int context) {
 		if(print) System.out.println("Binding");
-		iast.getExpression().accept(this);
+		env.put(iast.getName(), indVar++);
+		iast.getExpression().accept(this, indVar++);
 	}
 
 	@Override
-	public void visit(IASTprint iast) {
+	public void visit(IASTprint iast, int context) {
 		if(print) System.out.println("Print");
 		
 		IASTstatement expr = iast.getArg();
@@ -136,30 +170,34 @@ public class Compiler implements IASTvisitor {
 			String s = ((IASTconstString)expr).getString();
 			for(int i = 0; i < s.length(); i++) {
 				if(i+1 < s.length() && s.charAt(i)=='\\' && s.charAt(i+1)=='n') {
-					writeSpecialOperation(CompilerInstruction.COND_MOV, (int)'\n');
+					writeSpecialOperation(0, (int)'\n');
 					writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 					i++;
 				}else {
-					writeSpecialOperation(CompilerInstruction.COND_MOV, (int)s.charAt(i));
+					writeSpecialOperation(0, (int)s.charAt(i));
 					writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 				}
 				
 			}
 			
-		} else if(expr instanceof IASTconstInteger) {
+		}/* else if(expr instanceof IASTconstInteger) {
 			String s = Integer.toString(((IASTconstInteger)expr).getInteger());
 			for(int i = 0; i < s.length(); i++) {
 				writeSpecialOperation(CompilerInstruction.COND_MOV, (int)s.charAt(i));
 				writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 			}
 			
-		} else if (expr instanceof IASTexpression) {
-			
+		}*/ else if (expr instanceof IASTexpression) {
+			int indcontext = indVar++;
+			allocateVar();
+			((IASTexpression)expr).accept(this, indcontext);
+			fetchIntoReg(indcontext, 0);
+			writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
 		}
 	}
 
 	@Override
-	public void visit(IASTscan iast) {
+	public void visit(IASTscan iast, int context) {
 		if(print) System.out.println("Scan: "+iast.getName());
 		
 		
@@ -167,86 +205,104 @@ public class Compiler implements IASTvisitor {
 	}
 
 	@Override
-	public void visit(IASTadd iast) {
+	public void visit(IASTadd iast, int context) {
 		if(print) System.out.println("Add");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		
+		if(context == NO_CONTEXT) return;
+		
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		System.out.println("FETCH");
+		fetchIntoReg(contextarg1, 0);
+		System.out.println("FETCH2");
+		fetchIntoReg(contextarg2, 1);
+		System.out.println("WRITE RES");
+		writeOperation(CompilerInstruction.ADD, 2, 0, 1);
+		System.out.println("WRITE CTX");
+		putIntoArray(context, 2);
 		
 	}
 
 	@Override
-	public void visit(IASTmul iast) {
+	public void visit(IASTmul iast, int context) {
 		if(print) System.out.println("Mul");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 		
 	}
 
 	@Override
-	public void visit(IASTdiv iast) {
+	public void visit(IASTdiv iast, int context) {
 		if(print) System.out.println("Div");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 		
 	}
 
 	@Override
-	public void visit(IASTeq iast) {
+	public void visit(IASTeq iast, int context) {
 		if(print) System.out.println("=");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 	}
 
 	@Override
-	public void visit(IASTgt iast) {
+	public void visit(IASTgt iast, int context) {
 		if(print) System.out.println(">");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 		
 	}
 
 	@Override
-	public void visit(IASTlt iast) {
+	public void visit(IASTlt iast, int context) {
 		if(print) System.out.println("<");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 		
 	}
 
 	@Override
-	public void visit(IASTor iast) {
+	public void visit(IASTor iast, int context) {
 		if(print) System.out.println("Or");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 	}
 
 	@Override
-	public void visit(IASTand iast) {
+	public void visit(IASTand iast, int context) {
 		if(print) System.out.println("And");
-		iast.getArg1().accept(this);
-		iast.getArg2().accept(this);
+		iast.getArg1().accept(this, context);
+		iast.getArg2().accept(this, context);
 		
 	}
 
 	@Override
-	public void visit(IASTnot iast) {
+	public void visit(IASTnot iast, int context) {
 		if(print) System.out.println("Not");
-		iast.getArg().accept(this);
+		iast.getArg().accept(this, context);
 	}
 
 	@Override
-	public void visit(IASTconstInteger iast) {
+	public void visit(IASTconstInteger iast, int context) {
 		if(print) System.out.println("Integer");
+		if(context == NO_CONTEXT) return;
+		writeSpecialOperation(0, iast.getInteger());
+		putIntoArray(context, 0);
 	}
 
 	@Override
-	public void visit(IASTconstString iast) {
+	public void visit(IASTconstString iast, int context) {
 		if(print) System.out.println("String");
 		
 	}
 
 	@Override
-	public void visit(IASTident iast) {
+	public void visit(IASTident iast, int context) {
 		if(print) System.out.print("Ident: "+iast.getName());
 		
 	}

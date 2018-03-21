@@ -15,7 +15,7 @@ public class ASTscan extends ASTstatement implements IASTscan {
 		return name;
 	}
 	@Override
-	public void accept(IASTvisitor visitor) {
-		visitor.visit(this);
+	public void accept(IASTvisitor visitor, int context) {
+		visitor.visit(this, context);
 	}
 }

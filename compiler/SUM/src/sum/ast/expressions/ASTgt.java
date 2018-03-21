@@ -12,7 +12,7 @@ public class ASTgt extends ASTbinOp implements IASTgt{
 	}
 
 	@Override
-	public void accept(IASTvisitor visitor) {
-		visitor.visit(this);
+	public void accept(IASTvisitor visitor, int context) {
+		visitor.visit(this, context);
 	}
 }
