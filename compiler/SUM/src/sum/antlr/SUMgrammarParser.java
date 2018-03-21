@@ -219,8 +219,9 @@ public class SUMgrammarParser extends Parser {
 	public final StmtContext stmt() throws RecognitionException {
 		StmtContext _localctx = new StmtContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_stmt);
+		int _la;
 		try {
-			setState(37);
+			setState(41);
 			switch (_input.LA(1)) {
 			case T__11:
 			case INT:
@@ -238,40 +239,54 @@ public class SUMgrammarParser extends Parser {
 				{
 				setState(18); match(T__5);
 				setState(19); ((BindingContext)_localctx).var = match(IDENT);
-				setState(20); match(T__9);
-				setState(21); ((BindingContext)_localctx).val = expr(0);
+				setState(21);
+				_la = _input.LA(1);
+				if (_la==T__9) {
+					{
+					setState(20); match(T__9);
+					}
+				}
+
+				setState(24);
+				switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+				case 1:
+					{
+					setState(23); ((BindingContext)_localctx).val = expr(0);
+					}
+					break;
+				}
 				}
 				break;
 			case T__3:
 				_localctx = new PrintContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(22); match(T__3);
-				setState(23); ((PrintContext)_localctx).val = expr(0);
+				setState(26); match(T__3);
+				setState(27); ((PrintContext)_localctx).val = expr(0);
 				}
 				break;
 			case T__14:
 				_localctx = new ScanContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(24); match(T__14);
-				setState(25); ((ScanContext)_localctx).var = match(IDENT);
+				setState(28); match(T__14);
+				setState(29); ((ScanContext)_localctx).var = match(IDENT);
 				}
 				break;
 			case T__7:
 				_localctx = new AlternativeContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(26); match(T__7);
-				setState(27); ((AlternativeContext)_localctx).cond = expr(0);
-				setState(28); match(T__0);
-				setState(29); match(T__15);
-				setState(30); ((AlternativeContext)_localctx).cons = stmt();
-				setState(31); match(T__10);
-				setState(32); match(T__4);
+				setState(30); match(T__7);
+				setState(31); ((AlternativeContext)_localctx).cond = expr(0);
+				setState(32); match(T__0);
 				setState(33); match(T__15);
-				setState(34); ((AlternativeContext)_localctx).alt = stmt();
+				setState(34); ((AlternativeContext)_localctx).cons = stmt();
 				setState(35); match(T__10);
+				setState(36); match(T__4);
+				setState(37); match(T__15);
+				setState(38); ((AlternativeContext)_localctx).alt = stmt();
+				setState(39); match(T__10);
 				}
 				break;
 			default:
@@ -433,7 +448,7 @@ public class SUMgrammarParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(45);
+			setState(49);
 			switch (_input.LA(1)) {
 			case T__11:
 				{
@@ -441,8 +456,8 @@ public class SUMgrammarParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(40); match(T__11);
-				setState(41); ((LogicUnOpContext)_localctx).arg = expr(1);
+				setState(44); match(T__11);
+				setState(45); ((LogicUnOpContext)_localctx).arg = expr(1);
 				}
 				break;
 			case INT:
@@ -450,7 +465,7 @@ public class SUMgrammarParser extends Parser {
 				_localctx = new ConstIntegerContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(42); ((ConstIntegerContext)_localctx).intConst = match(INT);
+				setState(46); ((ConstIntegerContext)_localctx).intConst = match(INT);
 				}
 				break;
 			case STRING:
@@ -458,7 +473,7 @@ public class SUMgrammarParser extends Parser {
 				_localctx = new ConstStringContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(43); ((ConstStringContext)_localctx).stringConst = match(STRING);
+				setState(47); ((ConstStringContext)_localctx).stringConst = match(STRING);
 				}
 				break;
 			case IDENT:
@@ -466,38 +481,38 @@ public class SUMgrammarParser extends Parser {
 				_localctx = new IdentContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(44); ((IdentContext)_localctx).ident = match(IDENT);
+				setState(48); ((IdentContext)_localctx).ident = match(IDENT);
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(58);
+			setState(62);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(56);
-					switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+					setState(60);
+					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 					case 1:
 						{
 						_localctx = new BinOpContext(new ExprContext(_parentctx, _parentState));
 						((BinOpContext)_localctx).arg1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(47);
+						setState(51);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(48);
+						setState(52);
 						((BinOpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__17) | (1L << T__2) | (1L << T__1))) != 0)) ) {
 							((BinOpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						consume();
-						setState(49); ((BinOpContext)_localctx).arg2 = expr(5);
+						setState(53); ((BinOpContext)_localctx).arg2 = expr(5);
 						}
 						break;
 					case 2:
@@ -505,16 +520,16 @@ public class SUMgrammarParser extends Parser {
 						_localctx = new RelationBinOpContext(new ExprContext(_parentctx, _parentState));
 						((RelationBinOpContext)_localctx).arg1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(50);
+						setState(54);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(51);
+						setState(55);
 						((RelationBinOpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__12) | (1L << T__9) | (1L << T__8))) != 0)) ) {
 							((RelationBinOpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						consume();
-						setState(52); ((RelationBinOpContext)_localctx).arg2 = expr(4);
+						setState(56); ((RelationBinOpContext)_localctx).arg2 = expr(4);
 						}
 						break;
 					case 3:
@@ -522,24 +537,24 @@ public class SUMgrammarParser extends Parser {
 						_localctx = new LogicBinOpContext(new ExprContext(_parentctx, _parentState));
 						((LogicBinOpContext)_localctx).arg1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(53);
+						setState(57);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(54);
+						setState(58);
 						((LogicBinOpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__16 || _la==T__6) ) {
 							((LogicBinOpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						consume();
-						setState(55); ((LogicBinOpContext)_localctx).arg2 = expr(3);
+						setState(59); ((LogicBinOpContext)_localctx).arg2 = expr(3);
 						}
 						break;
 					}
 					} 
 				}
-				setState(60);
+				setState(64);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			}
 			}
 		}
@@ -570,24 +585,26 @@ public class SUMgrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\33@\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\33D\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\3\2\3\2\5\2\13\n\2\7\2\r\n\2\f\2\16\2\20\13\2\3\2\3\2\3\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\5\3(\n\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4\60\n\4\3\4\3\4\3\4\3\4\3\4\3"+
-		"\4\3\4\3\4\3\4\7\4;\n\4\f\4\16\4>\13\4\3\4\2\3\6\5\2\4\6\2\5\4\2\3\3\22"+
-		"\23\4\2\b\b\13\f\4\2\4\4\16\16H\2\16\3\2\2\2\4\'\3\2\2\2\6/\3\2\2\2\b"+
-		"\n\5\4\3\2\t\13\7\7\2\2\n\t\3\2\2\2\n\13\3\2\2\2\13\r\3\2\2\2\f\b\3\2"+
-		"\2\2\r\20\3\2\2\2\16\f\3\2\2\2\16\17\3\2\2\2\17\21\3\2\2\2\20\16\3\2\2"+
-		"\2\21\22\7\2\2\3\22\3\3\2\2\2\23(\5\6\4\2\24\25\7\17\2\2\25\26\7\26\2"+
-		"\2\26\27\7\13\2\2\27(\5\6\4\2\30\31\7\21\2\2\31(\5\6\4\2\32\33\7\6\2\2"+
-		"\33(\7\26\2\2\34\35\7\r\2\2\35\36\5\6\4\2\36\37\7\24\2\2\37 \7\5\2\2 "+
-		"!\5\4\3\2!\"\7\n\2\2\"#\7\20\2\2#$\7\5\2\2$%\5\4\3\2%&\7\n\2\2&(\3\2\2"+
-		"\2\'\23\3\2\2\2\'\24\3\2\2\2\'\30\3\2\2\2\'\32\3\2\2\2\'\34\3\2\2\2(\5"+
-		"\3\2\2\2)*\b\4\1\2*+\7\t\2\2+\60\5\6\4\3,\60\7\25\2\2-\60\7\27\2\2.\60"+
-		"\7\26\2\2/)\3\2\2\2/,\3\2\2\2/-\3\2\2\2/.\3\2\2\2\60<\3\2\2\2\61\62\f"+
-		"\6\2\2\62\63\t\2\2\2\63;\5\6\4\7\64\65\f\5\2\2\65\66\t\3\2\2\66;\5\6\4"+
-		"\6\678\f\4\2\289\t\4\2\29;\5\6\4\5:\61\3\2\2\2:\64\3\2\2\2:\67\3\2\2\2"+
-		";>\3\2\2\2<:\3\2\2\2<=\3\2\2\2=\7\3\2\2\2><\3\2\2\2\b\n\16\'/:<";
+		"\3\3\3\3\3\5\3\30\n\3\3\3\5\3\33\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
+		"\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3,\n\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4\64\n\4"+
+		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4?\n\4\f\4\16\4B\13\4\3\4\2\3\6"+
+		"\5\2\4\6\2\5\4\2\3\3\22\23\4\2\b\b\13\f\4\2\4\4\16\16N\2\16\3\2\2\2\4"+
+		"+\3\2\2\2\6\63\3\2\2\2\b\n\5\4\3\2\t\13\7\7\2\2\n\t\3\2\2\2\n\13\3\2\2"+
+		"\2\13\r\3\2\2\2\f\b\3\2\2\2\r\20\3\2\2\2\16\f\3\2\2\2\16\17\3\2\2\2\17"+
+		"\21\3\2\2\2\20\16\3\2\2\2\21\22\7\2\2\3\22\3\3\2\2\2\23,\5\6\4\2\24\25"+
+		"\7\17\2\2\25\27\7\26\2\2\26\30\7\13\2\2\27\26\3\2\2\2\27\30\3\2\2\2\30"+
+		"\32\3\2\2\2\31\33\5\6\4\2\32\31\3\2\2\2\32\33\3\2\2\2\33,\3\2\2\2\34\35"+
+		"\7\21\2\2\35,\5\6\4\2\36\37\7\6\2\2\37,\7\26\2\2 !\7\r\2\2!\"\5\6\4\2"+
+		"\"#\7\24\2\2#$\7\5\2\2$%\5\4\3\2%&\7\n\2\2&\'\7\20\2\2\'(\7\5\2\2()\5"+
+		"\4\3\2)*\7\n\2\2*,\3\2\2\2+\23\3\2\2\2+\24\3\2\2\2+\34\3\2\2\2+\36\3\2"+
+		"\2\2+ \3\2\2\2,\5\3\2\2\2-.\b\4\1\2./\7\t\2\2/\64\5\6\4\3\60\64\7\25\2"+
+		"\2\61\64\7\27\2\2\62\64\7\26\2\2\63-\3\2\2\2\63\60\3\2\2\2\63\61\3\2\2"+
+		"\2\63\62\3\2\2\2\64@\3\2\2\2\65\66\f\6\2\2\66\67\t\2\2\2\67?\5\6\4\78"+
+		"9\f\5\2\29:\t\3\2\2:?\5\6\4\6;<\f\4\2\2<=\t\4\2\2=?\5\6\4\5>\65\3\2\2"+
+		"\2>8\3\2\2\2>;\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2\2A\7\3\2\2\2B@\3\2"+
+		"\2\2\n\n\16\27\32+\63>@";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

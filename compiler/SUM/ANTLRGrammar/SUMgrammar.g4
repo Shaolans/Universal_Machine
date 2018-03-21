@@ -6,7 +6,7 @@ prog returns [sum.interfaces.iast.IASTprogram node]
 	
 stmt returns [sum.interfaces.iast.IASTstatement node]
 	: expr #Expression
-	| 'let' var=IDENT '=' val=expr #Binding
+	| 'let' var=IDENT '='? val=expr? #Binding
 	| 'print' val=expr #Print
 	| 'scan' var=IDENT #Scan
 	| 'if' cond=expr 'then' '{' cons=stmt '}' 'else' '{' alt=stmt '}' #Alternative

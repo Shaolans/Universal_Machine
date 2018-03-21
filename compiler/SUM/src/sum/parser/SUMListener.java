@@ -41,7 +41,7 @@ public class SUMListener implements SUMgrammarListener {
 
 	@Override
 	public void exitBinding(BindingContext ctx) {
-		ctx.node = factory.newBinding(ctx.var.getText(), ctx.val.node);
+		ctx.node = factory.newBinding(ctx.var.getText(), ctx.val==null?null:ctx.val.node);
 	}
 
 	@Override

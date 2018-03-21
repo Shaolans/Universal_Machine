@@ -30,6 +30,7 @@ import sum.interfaces.statements.IASTscan;
 
 public class Compiler implements IASTvisitor {
 	private static final boolean print = false;
+	private static final boolean asmtrace = true;
 	private static final int NO_CONTEXT = -1;
 	private int indVar;
 	private Map<String, Integer> env;
@@ -50,17 +51,11 @@ public class Compiler implements IASTvisitor {
 		
 		this.visit(iast, NO_CONTEXT);
 		
-		/*writeSpecialOperation(0, 33);
-		writeSpecialOperation(7, 10);
-		writeOperation(CompilerInstruction.ALLOCATION, 0, 7, 7);
-		writeOperation(CompilerInstruction.ARRAY_AMEND, 7, 6, 0);
-		
-		writeSpecialOperation(7, 1);
-		writeSpecialOperation(6, 0);
-		writeOperation(CompilerInstruction.ARRAY_INDEX, 0, 7, 6);
-		writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);*/
 		
 		writeOperation(CompilerInstruction.HALT, 0, 0, 0);
+		
+		if(asmtrace) System.out.println("COMPILATION COMPLETE");
+		
 		try {
 			fos.close();
 		} catch (IOException e) {
@@ -70,11 +65,13 @@ public class Compiler implements IASTvisitor {
 	}
 	
 	public void writeOperation(int op, int regA, int regB, int regC) {
-		if(op == 1) System.out.println("REG["+regA+"] = "+"Array[REG["+regB+"][REG["+regC+"]]");
-		if(op == 2) System.out.println("Array[REG["+regA+"][REG["+regB+"]] = REG["+regC+"]");
-		if(op == 3) System.out.println("REG["+regA+"] = "+"REG["+regB+"] + REG["+regC+"]");
-		if(op == 8) System.out.println("ALLOC "+(indVar-1)+" SIZE REG["+regC+"]");
-		if(op == 10) System.out.println("PRINT");
+		if(op == CompilerInstruction.ARRAY_INDEX && asmtrace) System.out.println("REG["+regA+"] = "+"Array[REG["+regB+"][REG["+regC+"]]");
+		if(op == CompilerInstruction.ARRAY_AMEND && asmtrace) System.out.println("Array[REG["+regA+"][REG["+regB+"]] = REG["+regC+"]");
+		if(op == CompilerInstruction.ADD && asmtrace) System.out.println("REG["+regA+"] = "+"REG["+regB+"] + REG["+regC+"]");
+		if(op == CompilerInstruction.MUL && asmtrace) System.out.println("REG["+regA+"] = "+"REG["+regB+"] * REG["+regC+"]");
+		if(op == CompilerInstruction.DIV && asmtrace) System.out.println("REG["+regA+"] = "+"REG["+regB+"] / REG["+regC+"]");
+		if(op == CompilerInstruction.ALLOCATION && asmtrace) System.out.println("ALLOC "+(indVar-1)+" SIZE REG["+regC+"]");
+		if(op == CompilerInstruction.OUTPUT && asmtrace) System.out.println("PRINT REG["+regC+"]");
 		byte operation[] = new byte[4];
 		operation[0] = (byte)(op << 4);
 		operation[1] = 0;
@@ -139,7 +136,7 @@ public class Compiler implements IASTvisitor {
 	public void visit(IASTprogram iast, int context) {
 		
 		for(IASTstatement stmts: iast.getProgram()) {
-			if(print) System.out.println("Stmts du programme");
+			if(print) System.out.println("Stmt du programme");
 			stmts.accept(this, context);
 		}
 		
@@ -156,8 +153,12 @@ public class Compiler implements IASTvisitor {
 	@Override
 	public void visit(IASTbinding iast, int context) {
 		if(print) System.out.println("Binding");
-		env.put(iast.getName(), indVar++);
-		iast.getExpression().accept(this, indVar++);
+		
+		int varcontext = indVar++;
+		env.put(iast.getName(), varcontext);
+		allocateVar();
+		
+		if(iast.getExpression() != null) iast.getExpression().accept(this, varcontext);
 	}
 
 	@Override
@@ -180,14 +181,7 @@ public class Compiler implements IASTvisitor {
 				
 			}
 			
-		}/* else if(expr instanceof IASTconstInteger) {
-			String s = Integer.toString(((IASTconstInteger)expr).getInteger());
-			for(int i = 0; i < s.length(); i++) {
-				writeSpecialOperation(CompilerInstruction.COND_MOV, (int)s.charAt(i));
-				writeOperation(CompilerInstruction.OUTPUT, 0, 0, 0);
-			}
-			
-		}*/ else if (expr instanceof IASTexpression) {
+		} else if (expr instanceof IASTexpression) {
 			int indcontext = indVar++;
 			allocateVar();
 			((IASTexpression)expr).accept(this, indcontext);
@@ -200,8 +194,10 @@ public class Compiler implements IASTvisitor {
 	public void visit(IASTscan iast, int context) {
 		if(print) System.out.println("Scan: "+iast.getName());
 		
-		
-		
+		int varcontext = env.get(iast.getName());
+		writeOperation(CompilerInstruction.INPUT, 0, 0, 0);
+		putIntoArray(varcontext, 0);
+			
 	}
 
 	@Override
@@ -216,13 +212,9 @@ public class Compiler implements IASTvisitor {
 		allocateVar();
 		iast.getArg1().accept(this, contextarg1);
 		iast.getArg2().accept(this, contextarg2);
-		System.out.println("FETCH");
 		fetchIntoReg(contextarg1, 0);
-		System.out.println("FETCH2");
 		fetchIntoReg(contextarg2, 1);
-		System.out.println("WRITE RES");
 		writeOperation(CompilerInstruction.ADD, 2, 0, 1);
-		System.out.println("WRITE CTX");
 		putIntoArray(context, 2);
 		
 	}
@@ -230,16 +222,36 @@ public class Compiler implements IASTvisitor {
 	@Override
 	public void visit(IASTmul iast, int context) {
 		if(print) System.out.println("Mul");
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		if(context == NO_CONTEXT) return;
+		
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 0);
+		fetchIntoReg(contextarg2, 1);
+		writeOperation(CompilerInstruction.MUL, 2, 0, 1);
+		putIntoArray(context, 2);
 		
 	}
 
 	@Override
 	public void visit(IASTdiv iast, int context) {
 		if(print) System.out.println("Div");
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		if(context == NO_CONTEXT) return;
+		
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 0);
+		fetchIntoReg(contextarg2, 1);
+		writeOperation(CompilerInstruction.DIV, 2, 0, 1);
+		putIntoArray(context, 2);
 		
 	}
 
@@ -304,6 +316,10 @@ public class Compiler implements IASTvisitor {
 	@Override
 	public void visit(IASTident iast, int context) {
 		if(print) System.out.print("Ident: "+iast.getName());
+		if(context == NO_CONTEXT) return;
+		int varcontext = env.get(iast.getName());
+		fetchIntoReg(varcontext, 0);
+		putIntoArray(context, 0);
 		
 	}
 
