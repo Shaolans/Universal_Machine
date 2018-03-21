@@ -29,8 +29,8 @@ import sum.interfaces.statements.IASTprint;
 import sum.interfaces.statements.IASTscan;
 
 public class Compiler implements IASTvisitor {
-	private static final boolean print = false;
-	private static final boolean asmtrace = false;
+	private static boolean printtree = false;
+	private static boolean asmtrace = true;
 	private static final int NO_CONTEXT = -1;
 	private int numInst;
 	private int indVar;
@@ -56,7 +56,6 @@ public class Compiler implements IASTvisitor {
 		
 		writeOperation(CompilerInstruction.HALT, 0, 0, 0);
 		
-		if(asmtrace) System.out.println("COMPILATION COMPLETE");
 		
 		try {
 			fos.close();
@@ -139,7 +138,7 @@ public class Compiler implements IASTvisitor {
 	public void visit(IASTprogram iast, int context) {
 		
 		for(IASTstatement stmts: iast.getProgram()) {
-			if(print) System.out.println("Stmt du programme");
+			if(printtree) System.out.println("Stmt du programme");
 			stmts.accept(this, context);
 		}
 		
@@ -147,17 +146,17 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTalternative iast, int context) {
-		if(print) System.out.println("If");
+		if(printtree) System.out.println("If");
 		
 		
 		//A FIX
-		
+		int DEFAULT_SIZE = 120;
 		int condctx = indVar++;
 		allocateVar();
 		iast.getCondition().accept(this, condctx);
 		
 		writeSpecialOperation(1, numInst+8);
-		writeSpecialOperation(0, numInst+8+200-1);
+		writeSpecialOperation(0, numInst+8+DEFAULT_SIZE-1);
 		fetchIntoReg(condctx, 2);
 		writeOperation(CompilerInstruction.COND_MOV, 0, 1, 2);
 		writeSpecialOperation(1, 0);
@@ -169,11 +168,11 @@ public class Compiler implements IASTvisitor {
 			istmt.accept(this, NO_CONTEXT);
 		}
 		
-		writeSpecialOperation(0, (start+2*200));
 		writeSpecialOperation(1, 0);
+		writeSpecialOperation(0, start+2*DEFAULT_SIZE);
 		writeOperation(CompilerInstruction.LOAD_PROG, 0, 1, 0);
 		
-		while(numInst < start+200) {
+		while(numInst < start+DEFAULT_SIZE) {
 			writeSpecialOperation(0, 0);
 		}
 
@@ -181,14 +180,14 @@ public class Compiler implements IASTvisitor {
 			istmt.accept(this, NO_CONTEXT);
 		}
 		
-		while(numInst < start+2*200) {
+		while(numInst < start+2*DEFAULT_SIZE) {
 			writeSpecialOperation(0, 0);
 		}
 	}
 
 	@Override
 	public void visit(IASTbinding iast, int context) {
-		if(print) System.out.println("Binding");
+		if(printtree) System.out.println("Binding");
 		
 		int varcontext = indVar++;
 		env.put(iast.getName(), varcontext);
@@ -199,7 +198,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTprint iast, int context) {
-		if(print) System.out.println("Print");
+		if(printtree) System.out.println("Print");
 		
 		IASTstatement expr = iast.getArg();
 		
@@ -234,7 +233,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTscan iast, int context) {
-		if(print) System.out.println("Scan: "+iast.getName());
+		if(printtree) System.out.println("Scan: "+iast.getName());
 		
 		int varcontext = env.get(iast.getName());
 		writeOperation(CompilerInstruction.INPUT, 0, 0, 0);
@@ -244,7 +243,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTadd iast, int context) {
-		if(print) System.out.println("Add");
+		if(printtree) System.out.println("Add");
 		if(context == NO_CONTEXT) return;
 		
 		int contextarg1 = indVar++;
@@ -262,7 +261,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTmul iast, int context) {
-		if(print) System.out.println("Mul");
+		if(printtree) System.out.println("Mul");
 		if(context == NO_CONTEXT) return;
 		
 		int contextarg1 = indVar++;
@@ -280,7 +279,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTdiv iast, int context) {
-		if(print) System.out.println("Div");
+		if(printtree) System.out.println("Div");
 		if(context == NO_CONTEXT) return;
 		
 		int contextarg1 = indVar++;
@@ -298,7 +297,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTeq iast, int context) {
-		if(print) System.out.println("=");
+		if(printtree) System.out.println("=");
 		if(context == NO_CONTEXT) return;
 		
 		iast.getArg1().accept(this, context);
@@ -307,7 +306,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTgt iast, int context) {
-		if(print) System.out.println(">");
+		if(printtree) System.out.println(">");
 		if(context == NO_CONTEXT) return;
 		
 		iast.getArg1().accept(this, context);
@@ -317,7 +316,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTlt iast, int context) {
-		if(print) System.out.println("<");
+		if(printtree) System.out.println("<");
 		if(context == NO_CONTEXT) return;
 		
 		iast.getArg1().accept(this, context);
@@ -327,7 +326,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTor iast, int context) {
-		if(print) System.out.println("Or");
+		if(printtree) System.out.println("Or");
 		if(context == NO_CONTEXT) return;
 		
 		iast.getArg1().accept(this, context);
@@ -336,7 +335,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTand iast, int context) {
-		if(print) System.out.println("And");
+		if(printtree) System.out.println("And");
 		if(context == NO_CONTEXT) return;
 		
 		int contextarg1 = indVar++;
@@ -354,7 +353,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTnot iast, int context) {
-		if(print) System.out.println("Not");
+		if(printtree) System.out.println("Not");
 		if(context == NO_CONTEXT) return;
 		
 		int argcontext = indVar++;
@@ -367,7 +366,7 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTconstInteger iast, int context) {
-		if(print) System.out.println("Integer");
+		if(printtree) System.out.println("Integer");
 		if(context == NO_CONTEXT) return;
 		
 		writeSpecialOperation(0, iast.getInteger());
@@ -376,19 +375,27 @@ public class Compiler implements IASTvisitor {
 
 	@Override
 	public void visit(IASTconstString iast, int context) {
-		if(print) System.out.println("String");
+		if(printtree) System.out.println("String");
 		
 	}
 
 	@Override
 	public void visit(IASTident iast, int context) {
-		if(print) System.out.print("Ident: "+iast.getName());
+		if(printtree) System.out.print("Ident: "+iast.getName());
 		if(context == NO_CONTEXT) return;
 		
 		int varcontext = env.get(iast.getName());
 		fetchIntoReg(varcontext, 0);
 		putIntoArray(context, 0);
 		
+	}
+	
+	public void setAsmTrace(boolean b) {
+		asmtrace = b;
+	}
+	
+	public void setPrintTree(boolean b) {
+		printtree = b;
 	}
 
 }

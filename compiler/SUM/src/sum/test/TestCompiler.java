@@ -14,10 +14,10 @@ public class TestCompiler {
 	public static void main(String[] args) throws IOException {
 		IASTfactory factory = new ASTfactory();
 		SUMParser sp = new SUMParser(factory);
-		IASTprogram p = sp.getProgram("test\\test4.sum");
+		IASTprogram p = sp.getProgram("test\\test3.sum");
 		sum.compiler.Compiler c = new sum.compiler.Compiler();
 		//c.visit(p);
-		c.compile(p,"out\\test4.um");
+		c.compile(p,"out\\test3.um");
 		/*
 		try {
 			FileInputStream is = new FileInputStream(new File("out\\test2.um"));

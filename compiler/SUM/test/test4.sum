@@ -9,7 +9,7 @@ then {
 	print "\n"
 	print "ELSE BODY \n"
 }
-print "Hors de la boucle"
+print "Hors du if"
 print "\n"
 let x = 97+25
 print x
