@@ -10,6 +10,7 @@ public class Compile {
 	public static void main(String[] args) {
 		if(args.length < 2) {
 			System.out.println("java -jar <intpufile.sum> <outputfile.um> [--verbose]||[--verbose-asm]");
+			return;
 		}
 		
 		IASTfactory factory = new ASTfactory();
