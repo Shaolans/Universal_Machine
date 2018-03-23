@@ -1,0 +1,38 @@
+let x = 1 AND 1
+print x
+print "\n"
+
+let y = 1 AND 0
+print y
+print "\n"
+
+
+let z = 0 AND 1
+print z
+print "\n"
+
+let a = 0 AND 0
+print a
+print "\n"
+
+
+let b = 100 AND 100
+print b
+print "\n"
+
+let c = 1 AND 20
+print c
+print "\n"
+
+let d = 41 AND 10
+print d
+print "\n"
+
+
+let e = 100 AND 0
+print e
+print "\n"
+
+let f = 0 AND 20
+print f
+print "\n"

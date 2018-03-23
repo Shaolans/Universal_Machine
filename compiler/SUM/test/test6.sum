@@ -1,0 +1,10 @@
+let x = NOT 1
+print x
+print "\n"
+let y = NOT 10
+print y
+print "\n"
+let z = NOT 0
+print z
+print "\n"
+print "FIN\n"

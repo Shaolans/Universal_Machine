@@ -56,7 +56,6 @@ public class Compiler implements IASTvisitor {
 		
 		writeOperation(CompilerInstruction.HALT, 0, 0, 0);
 		
-		
 		try {
 			fos.close();
 		} catch (IOException e) {
@@ -105,8 +104,8 @@ public class Compiler implements IASTvisitor {
 		val += (byte)((regA & 0x00000001)==0?0:2);
 		val += (byte)((value & 0x01000000)==0?0:1);
 		operation[0] = val;
-		operation[1] = (byte)(value & 0x00FF0000);
-		operation[2] = (byte)(value & 0x0000FF00);
+		operation[1] = (byte)((value & 0x00FF0000) >>> 16);
+		operation[2] = (byte)((value & 0x0000FF00) >>> 8);
 		operation[3] = (byte)(value & 0x000000FF);
 		try {
 			fos.write(operation);
@@ -149,8 +148,7 @@ public class Compiler implements IASTvisitor {
 		if(printtree) System.out.println("If");
 		
 		
-		//A FIX
-		int DEFAULT_SIZE = 120;
+		int DEFAULT_SIZE = 4096;
 		int condctx = indVar++;
 		allocateVar();
 		iast.getCondition().accept(this, condctx);
@@ -329,8 +327,20 @@ public class Compiler implements IASTvisitor {
 		if(printtree) System.out.println("Or");
 		if(context == NO_CONTEXT) return;
 		
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 1);
+		fetchIntoReg(contextarg2, 2);
+		writeSpecialOperation(0, 0);
+		writeSpecialOperation(3, 1);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 3, 1);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 3, 2);
+		putIntoArray(context, 0);
+		
 	}
 
 	@Override
@@ -346,8 +356,14 @@ public class Compiler implements IASTvisitor {
 		iast.getArg2().accept(this, contextarg2);
 		fetchIntoReg(contextarg1, 2);
 		fetchIntoReg(contextarg2, 3);
-		writeOperation(CompilerInstruction.NOT_AND, 1, 2, 3);
-		writeOperation(CompilerInstruction.NOT_AND, 0, 1, 1);
+		
+		writeSpecialOperation(4, 1);
+		writeSpecialOperation(5, 0);
+		writeSpecialOperation(1, 0);
+		writeSpecialOperation(0, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 1, 4, 2);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 1, 3);
+		
 		putIntoArray(context, 0);
 	}
 
@@ -359,8 +375,10 @@ public class Compiler implements IASTvisitor {
 		int argcontext = indVar++;
 		allocateVar();
 		iast.getArg().accept(this, argcontext);
-		fetchIntoReg(argcontext, 1);
-		writeOperation(CompilerInstruction.NOT_AND, 0, 1, 1);
+		fetchIntoReg(argcontext, 2);
+		writeSpecialOperation(0, 1);
+		writeSpecialOperation(1, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 1, 2);
 		putIntoArray(context, 0);
 	}
 

@@ -1,0 +1,30 @@
+let x = 1 OR 1
+print x
+print "\n"
+
+let y = 1 OR 0
+print y
+print "\n"
+
+
+let z = 0 OR 1
+print z
+print "\n"
+
+let a = 0 OR 0
+print a
+print "\n"
+
+
+let b = 100 OR 100
+print b
+print "\n"
+
+let c = 0 OR 20
+print c
+print "\n"
+
+let d = 41 OR 0
+print d
+print "\n"
+

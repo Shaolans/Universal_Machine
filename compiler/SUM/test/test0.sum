@@ -1,0 +1,6 @@
+let x = 15;
+print x;
+let y = 0;
+print y;
+let z = 500;
+print z;

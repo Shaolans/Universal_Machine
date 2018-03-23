@@ -1,0 +1,16 @@
+if 0
+then {
+	print "then";
+	print " !";
+	print "\n"
+	print "THEN BODY \n"
+} else {
+	print "else !";
+	print "\n"
+	print "ELSE BODY \n"
+}
+print "Hors du if"
+print "\n"
+let x = 97+25
+print x
+print "\n"
