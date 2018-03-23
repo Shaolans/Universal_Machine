@@ -327,8 +327,35 @@ public class Compiler implements IASTvisitor {
 		if(printtree) System.out.println(">");
 		if(context == NO_CONTEXT) return;
 		
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 1);
+		fetchIntoReg(contextarg2, 2);
+		writeOperation(CompilerInstruction.DIV, 3, 1, 2);
+		writeSpecialOperation(0, 0);
+		writeSpecialOperation(4, 1);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 4, 3);
+		
+		
+		
+		writeOperation(CompilerInstruction.NOT_AND, 3, 2, 2);
+		writeSpecialOperation(4, 1);
+		writeOperation(CompilerInstruction.ADD, 3, 3, 4);
+		writeOperation(CompilerInstruction.ADD, 1, 3, 1);
+		writeSpecialOperation(2, 1);
+		writeSpecialOperation(3, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 2, 3, 1);
+		writeSpecialOperation(1, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 1, 2);
+		
+		putIntoArray(context, 0);
+		
+		
+		
 		
 	}
 
@@ -337,9 +364,32 @@ public class Compiler implements IASTvisitor {
 		if(printtree) System.out.println("<");
 		if(context == NO_CONTEXT) return;
 		
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 2);
+		fetchIntoReg(contextarg2, 1);
+		writeOperation(CompilerInstruction.DIV, 3, 1, 2);
+		writeSpecialOperation(0, 0);
+		writeSpecialOperation(4, 1);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 4, 3);
 		
+		
+		
+		writeOperation(CompilerInstruction.NOT_AND, 3, 2, 2);
+		writeSpecialOperation(4, 1);
+		writeOperation(CompilerInstruction.ADD, 3, 3, 4);
+		writeOperation(CompilerInstruction.ADD, 1, 3, 1);
+		writeSpecialOperation(2, 1);
+		writeSpecialOperation(3, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 2, 3, 1);
+		writeSpecialOperation(1, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 0, 1, 2);
+		
+		putIntoArray(context, 0);
 	}
 
 	@Override

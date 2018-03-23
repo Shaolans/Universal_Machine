@@ -1,0 +1,6 @@
+if 50 > 50
+then {
+	print "problem !\n"
+} else {
+	print "50 > 50 => else !\n"
+}
