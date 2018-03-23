@@ -1,0 +1,7 @@
+if 100=100
+then {
+	print "equals works !\n"
+
+} else {
+	print "not happening !\n"
+}

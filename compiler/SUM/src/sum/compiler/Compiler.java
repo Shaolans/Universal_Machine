@@ -53,7 +53,6 @@ public class Compiler implements IASTvisitor {
 		
 		this.visit(iast, NO_CONTEXT);
 		
-		
 		writeOperation(CompilerInstruction.HALT, 0, 0, 0);
 		
 		try {
@@ -170,17 +169,24 @@ public class Compiler implements IASTvisitor {
 		writeSpecialOperation(0, start+2*DEFAULT_SIZE);
 		writeOperation(CompilerInstruction.LOAD_PROG, 0, 1, 0);
 		
+		boolean asmtrace_atpre = asmtrace;
+		asmtrace = false;
+		if(asmtrace_atpre) System.out.println("FILL REST OF ALTERNATIVE (CONS) WITH NOP");
 		while(numInst < start+DEFAULT_SIZE) {
 			writeSpecialOperation(0, 0);
 		}
-
+		asmtrace = asmtrace_atpre;
+		
 		for(IASTstatement istmt: iast.getAlternative()) {
 			istmt.accept(this, NO_CONTEXT);
 		}
 		
+		asmtrace = false;
+		if(asmtrace_atpre) System.out.println("FILL REST OF ALTERNATIVE (ALT) WITH NOP");
 		while(numInst < start+2*DEFAULT_SIZE) {
 			writeSpecialOperation(0, 0);
 		}
+		asmtrace = asmtrace_atpre;
 	}
 
 	@Override
@@ -298,8 +304,22 @@ public class Compiler implements IASTvisitor {
 		if(printtree) System.out.println("=");
 		if(context == NO_CONTEXT) return;
 		
-		iast.getArg1().accept(this, context);
-		iast.getArg2().accept(this, context);
+		int contextarg1 = indVar++;
+		allocateVar();
+		int contextarg2 = indVar++;
+		allocateVar();
+		iast.getArg1().accept(this, contextarg1);
+		iast.getArg2().accept(this, contextarg2);
+		fetchIntoReg(contextarg1, 0);
+		fetchIntoReg(contextarg2, 1);
+		writeOperation(CompilerInstruction.NOT_AND, 2, 1, 1);
+		writeSpecialOperation(3, 1);
+		writeOperation(CompilerInstruction.ADD, 2, 2, 3);
+		writeOperation(CompilerInstruction.ADD, 0, 0, 2);
+		writeSpecialOperation(1, 1);
+		writeSpecialOperation(2, 0);
+		writeOperation(CompilerInstruction.COND_MOV, 1, 2, 0);
+		putIntoArray(context, 1);
 	}
 
 	@Override

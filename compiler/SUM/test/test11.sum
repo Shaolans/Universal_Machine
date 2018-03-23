@@ -1,0 +1,6 @@
+if 100+500=100+500
+then {
+	print "equals works !\n"
+} else {
+	print "not happening !\n"
+}
