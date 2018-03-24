@@ -1,0 +1,9 @@
+if 100 > 0
+then {
+	print "100 est supérieur a 0 \n"
+} else {
+	print "nope \n"
+}
+let x;
+scan x;
+print x;
