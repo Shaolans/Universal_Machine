@@ -387,6 +387,11 @@ public class Compiler implements IASTvisitor {
 		fetchIntoReg(contextarg1, 1);
 		fetchIntoReg(contextarg2, 2);
 		
+		//on ajoute +1 pour eviter un probleme de division par 0
+		writeSpecialOperation(3, 1);
+		writeOperation(CompilerInstruction.ADD, 1, 1, 3);
+		writeOperation(CompilerInstruction.ADD, 2, 2, 3);
+		
 		//si reg[1]/reg[2] = 0 alors reg[1] < reg[2] car c'est une division entiere 
 		writeOperation(CompilerInstruction.DIV, 3, 1, 2);
 		writeSpecialOperation(0, 0);
@@ -425,6 +430,12 @@ public class Compiler implements IASTvisitor {
 		iast.getArg2().accept(this, contextarg2);
 		fetchIntoReg(contextarg1, 2);
 		fetchIntoReg(contextarg2, 1);
+		
+		writeSpecialOperation(3, 1);
+		writeOperation(CompilerInstruction.ADD, 1, 1, 3);
+		writeOperation(CompilerInstruction.ADD, 2, 2, 3);
+		
+		
 		writeOperation(CompilerInstruction.DIV, 3, 1, 2);
 		writeSpecialOperation(0, 0);
 		writeSpecialOperation(4, 1);
