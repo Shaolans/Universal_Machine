@@ -2,12 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "machine.h"
+#include <signal.h>
 
+void sig_exit(){
+  exit(0);
+}
 
 uint32 registers[8] = {0};
 uint32 indexcpt = 2;
 
 int main(int argc, char **argv){
+  signal(SIGUSR1, sig_exit);
   if(argc != 2){
     printf("Il faut donner un fichier\n");
     return 1;

@@ -152,6 +152,64 @@ On initialise un tableau de 8 entiers non signés qui correspondent aux registre
 Le coeur de l'interpretation correspond à un switch englobé dans un while(1) et nous récupérons l'opération, l'indice des registres 
 par des décalage de bit de l'instruction 32 bits puis on incrémente le compteur pt.
 
+\section{Performance}
+Les performances d'un interpreteur n'est pas à négliger, du fait de notre implantation C par tableau compilé en -O3 nous avons des
+performances très satisfaisantes.
+En prenant le fichier sandmarkz.umz, nous obtenons un temps de 18.424 secondes alors qu'une implantation JAVA peut aller jusqu'à 
+plusieurs minutes pour finir l'éxécution du programme.
+
+\section{Implantation de la machine universelle par liste}
+\textbf{NOTE:} Nous allons discuter de la première implantation de la machine universelle à partir de liste, celle-ci bien que fonctionnel
+est très lente et nous allons étudier ses performances. Il est donc à noter que cette implantation ci n'est pas à retenir pour une
+utilisation mais plutôt pour une analyse. Cependant si vous souhaitez voir le code, il se trouve dans le dossier
+./archives/Universal\_Machine\_list.
+\\ \\
+La première version de la machine universelle se repose sur une structure de liste, bien que cette implantation fonctionne, elle
+possède le désavantage d'être très lente. Le fichier sandmarkz.umz ne se termine toujours pas après 10 heures d'éxécution.
+Ainsi afin de déterminé le goulot d'étranglement du programme, nous avons utilisé le logiciel de profilage de code Gprof.
+Cet outil permet de récupérer les statistiques sur le temps et le nombre d'appel de fonctions dans une éxécution du programme.
+Afin d'avoir un fichier en sorti nommé \textit{gmon.out}, il faut au préalable désactivé l'optimisation à la compilation et compiler avec
+le flag \textit{-pg}.
+Cependant, il faut que le programme termine correctement pour que ce fichier soit généré, nous avons donc décidé de bind le signal 
+\textit{SIGUSR1} comme ceci:
+\begin{verbatim}
+ #include <signal.h>
+ ...
+ void sig_exit(){
+  exit(0);
+ }
+ ...
+ int main(int argc, char **argv){
+  signal(SIGUSR1, sig_exit);
+  ...
+ }
+\end{verbatim}
+Une fois le fichier \textit{gmon.out} généré (nous avons lancé le signal \textit{SIGUSR1} à la fin du sandmark 100, il suffit
+d'appliquer la commande:
+\begin{verbatim}
+ gprof universal_machine gmon.out > analyse.txt
+\end{verbatim}
+Nous obtenons dans le fichier \textit{analyse.txt}:
+\begin{verbatim}
+ Flat profile:
+
+ Each sample counts as 0.01 seconds.
+   %   cumulative   self              self     total           
+  time   seconds   seconds    calls  us/call  us/call  name    
+  99.52    146.74   146.74  5307119    27.65    27.65  getArray
+   0.58    147.60     0.86                             main
+   0.03    147.65     0.05    44683     1.01     1.01  removeArray
+   0.01    147.66     0.01    87030     0.12     0.12  addArray
+   0.00    147.66     0.00    87030     0.00     0.00  getFreeIndex
+   0.00    147.66     0.00    44683     0.00     0.00  addFreeIndex
+   0.00    147.66     0.00        1     0.00     0.00  initArrays
+   0.00    147.66     0.00        1     0.00     0.00  initFreeIndex
+   0.00    147.66     0.00        1     0.00     0.00  loadFile
+\end{verbatim}
+Ainsi, sur les 147.66 secondes d'éxécutions, près de 99.52\% du temps de calcul est utilisé pour éffectuer la fonction getArray.
+Nous atteignons aussi un nombre très élevés d'appel 5307119 pour un temps relativement cours. Les problèmes de performances 
+étaient donc dû aux accès de tableaux, en raison de ce nombre important nous avons décidé d'utiliser une implantation de tableaux de
+tableaux plutôt qu'une implantation de liste de tableaux.
 
 
 \chapter{Compilateur S-UM}
