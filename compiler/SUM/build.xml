@@ -18,6 +18,7 @@
 		<manifest>
 			<attribute name="Main-Class" value="sum.executable.Compile"/>
 		</manifest>
+		<zipgroupfileset dir="." includes="*.jar"/>
 	</jar>
 </target>
 
