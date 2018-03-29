@@ -1,0 +1,163 @@
+\documentclass[a4paper,12pt]{report}
+%\documentclass[a4paper,10pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+
+\usepackage[margin=0.75in]{geometry}
+
+\renewcommand{\contentsname}{Sommaire}
+
+\renewcommand{\chaptername}{}
+\setcounter{chapter}{-1}
+
+
+\title{\Huge Rapport \\ 
+	Projet de compilation avancée \\
+	\large Développement d'un interpréteur pour le langage UM de la machine universelle \\
+	Développement d'un compilateur du langage S-UM vers le langage UM}
+\author{Amel ARKOUB 3301571 \\ Ling-Chun SO 3414546}
+\date{04 avril 2018}
+
+\pdfinfo{
+  /Title    ()
+  /Author   ()
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\chapter{Introduction}
+\section{Présentation}
+Le but de ce projet est de fournir dans un premier temps, une implantation de la machine universelle (\url{www.boundvariable.org/um-spec.txt})
+issue d'un concours de programmation, \textit{ACM International Conference on Functional Programming} (ICFP) de 2006 
+(\url{www.boundvariable.org/task.shtml}).
+Nous souhaiterions aussi pouvoir programmer dans le langage compris par la machine universelle, cependant celui-ci est un langage
+binaire, ce qui n'est pas chose aisée. Ainsi dans un second temps nous allons écrire un compilateur qui compile le langage S-UM 
+\textit{Specification of Universal Machine} vers le langage binaire UM.
+
+\section{Description des fichiers}
+Voici les différents dossiers et ce qu'ils contiennent:
+\begin{itemize}
+ \item ./um/ $\rightarrow$ Ce dossier contient l'implantation de la machine universelle.
+ \item ./sum/ $\rightarrow$ Ce dossier contient l'implantation du compilateur S-UM.
+ \item ./tests/ $\rightarrow$ Ce dossier contient les différents tests du compilateur S-UM.
+ \item ./rapport.pdf $\rightarrow$ Ce fichier correspond à ce rapport.
+ \item ./README.md $\rightarrow$ Ce fichier contient les instructions pour compiler et tester le projet.
+ \item ./rapport/ $\rightarrow$ Ce dossier contient les sources de ce rapport en LateX.
+ \item ./archives/ $\rightarrow$ Ce dossier contient essentiellement des fichiers à ne pas considérer, plus spécifiquement, se trouve
+ un début d'analyseur/parseur en C pour le langage S-UM mais aussi une implantation de la machine universelle à partir de liste cependant
+ pour des raisons de performance elle à été délaissé pour une implantation plus performante.
+\end{itemize}
+
+
+\section{Etat du projet}
+Le projet dans l'ensemble terminé cependant certains points sont à préciser:
+\begin{itemize}
+ \item la machine universelle (UM): \textcolor{green}{Fonctionnel}
+ \item le compilateur S-UM: \textcolor{green}{Fonctionnel}
+ \\ Tous les traits du langage sont supportés cependant il est important de préciser:
+ \begin{itemize}
+  \item séquence d'instructions: \textcolor{green}{Fonctionnel}
+  \item affectation de variable: \textcolor{green}{Fonctionnel}
+  \item print: \textcolor{orange}{Améliorable}
+  \\ En effet, le print fonctionne pour les chaînes de caractères et ainsi que les constantes, cependant elle n'affiche que l'évaluation
+  modulo 256. Par exemple, \textit{print 96+1} affichera en sortie ``a'', 97 étant la lettre ``a'' en ASCII.
+  \item scan: \textcolor{orange}{Améliorable}
+  \\Le scan ne prend qu'un caractère ASCII.
+  \item alternative: \textcolor{green}{Fonctionnel}
+  \item entier: \textcolor{green}{Fonctionnel}
+  \item chaine de caractère: \textcolor{green}{Fonctionnel}
+  \item expression arithmétique: \textcolor{green}{Fonctionnel}
+  \item expression relationnelles: \textcolor{green}{Fonctionnel}
+  \item expression logiques binaires: \textcolor{green}{Fonctionnel}
+  \item expression logiques unaires: \textcolor{green}{Fonctionnel}
+ \end{itemize}
+\end{itemize}
+
+
+\chapter{Machine Universelle}
+\section{Structure}
+Au niveau de l'implantation de la machine universelle, étant donné que chaque \textit{platter} est codé sur 32 bits, nous utilisons
+un entier non signé 32 bits:
+\begin{verbatim}
+ typedef uint32_t uint32;
+\end{verbatim}
+
+Nous avons choisit comme structure pour contenir les instructions du programme celle-ci:
+\begin{verbatim}
+typedef struct array{
+  uint32 size;
+  uint32 *platter;
+} array;
+\end{verbatim}
+C'est une structure permettant de contenir un tableau d'instructions et la taille en mémoire (la taille est nécessaire lors de
+l'instruction LOAD PROGRAM).
+\\ \\
+Afin de pouvoir garder en mémoire tout les indices réutilisable nous avons une structure de liste pour les indices, dans le cas où
+la liste est vide on retourne une variable globale et on l'incrémente.
+\begin{verbatim}
+ extern uint32 indexcpt;
+ typedef struct freeindex{
+  uint32 index;
+  struct freeindex *next;
+ } freeindex;
+\end{verbatim}
+
+\section{Fonctions}
+Voici la description des fonctions de la machine universelle:
+\begin{itemize}
+ \item array* loadFile(const char* filename) $\rightarrow$ Renvoie un tableau contenant toutes les instructions lues dans le fichier
+ \textit{filename} en binaire, il faut ensuite inversé l'endianess (le lancement de la machine virtuelle avec le fichier
+ \textit{ressources/sandmarkz.umz} indique si l'endianess est incorrect par l'affichage sur le shell \textit{endianess}).
+ \item freeindex* initFreeIndex() $\rightarrow$ Initialise la file d'indice utilisable.
+ \item void addFreeIndex(freeindex** fi, uint32 index) $\rightarrow$ Ajoute dans la file d'indice fi, l'indice index.
+ \item uint32 getFreeIndex(freeindex** fi) $\rightarrow$ Récupère un indice utilisable, si la file est libre on retourne indexcpt++.
+ \item void freeFreeIndex(freeindex** fi) $\rightarrow$ Désalloue la structure de file.
+ \item array* initArray(uint32 size) $\rightarrow$ Alloue la structure array de taill size.
+ \item void freeArray(array *arr) $\rightarrow$ Désalloue la structure array.
+\end{itemize}
+
+
+\section{Interprétation du langage}
+Le canevas de l'interpretation du langage est le suivant:
+\begin{verbatim}
+ uint32 registers[8] = {0};
+ while(1){
+    word = zero[pt];
+    op = word>>28;
+    a = ((word>>6) & 0x7);
+    b = ((word>>3) & 0x7);
+    c = (word & 0x7);
+    switch(op){
+      case ..:
+      case ..:
+      ...
+    }
+    pt++;
+ }
+\end{verbatim}
+On initialise un tableau de 8 entiers non signés qui correspondent aux registrers.
+Le coeur de l'interpretation correspond à un switch englobé dans un while(1) et nous récupérons l'opération, l'indice des registres 
+par des décalage de bit de l'instruction 32 bits puis on incrémente le compteur pt.
+
+
+
+\chapter{Compilateur S-UM}
+
+
+
+
+
+\end{document}
