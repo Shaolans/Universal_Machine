@@ -18,3 +18,4 @@
 \contentsline {subsection}{\numberline {2.4.3}Stockage des calculs}{10}{subsection.2.4.3}
 \contentsline {subsection}{\numberline {2.4.4}Traduction en instruction UM}{10}{subsection.2.4.4}
 \contentsline {subsection}{\numberline {2.4.5}Egalit\IeC {\'e}}{11}{subsection.2.4.5}
+\contentsline {subsection}{\numberline {2.4.6}Relation d'ordre: > et <}{11}{subsection.2.4.6}

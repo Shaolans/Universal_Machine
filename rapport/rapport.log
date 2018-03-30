@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.1.30)  30 MAR 2018 12:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.1.30)  30 MAR 2018 13:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -683,7 +683,7 @@ Overfull \hbox (41.98112pt too wide) in paragraph at lines 282--286
 ns le dossier ./sum/SUM/src/sum/ast. 
  []
 
-<./plantuml/ast_general_structure.png, id=151, 975.645pt x 499.8675pt>
+<./plantuml/ast_general_structure.png, id=156, 975.645pt x 499.8675pt>
 File: ./plantuml/ast_general_structure.png Graphic file (type png)
 
 <use ./plantuml/ast_general_structure.png>
@@ -691,7 +691,7 @@ Package pdftex.def Info: ./plantuml/ast_general_structure.png used on input lin
 e 288.
 (pdftex.def)             Requested size: 536.60641pt x 274.92796pt.
 
-<./plantuml/ast_binop_structure.png, id=152, 756.8275pt x 283.0575pt>
+<./plantuml/ast_binop_structure.png, id=157, 756.8275pt x 283.0575pt>
 File: ./plantuml/ast_binop_structure.png Graphic file (type png)
 
 <use ./plantuml/ast_binop_structure.png>
@@ -745,21 +745,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 346--356
  []
 
 [10]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 377.
- [11]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 377.
+Underfull \hbox (badness 10000) in paragraph at lines 377--383
+
+ []
+
+[11]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 428.
+ [12]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 428.
  (./rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 377.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 377.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 428.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 428.
 Package rerunfilecheck Info: File `rapport.out' has not changed.
-(rerunfilecheck)             Checksum: 5CBB5E7B87288A709D468B356E1E1DCC;1361.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 377.
+(rerunfilecheck)             Checksum: 0D92FACA5C7F7557B226A2C98062C892;1439.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 428.
  ) 
 Here is how much of TeX's memory you used:
- 6547 strings out of 493029
- 92621 string characters out of 6136234
+ 6550 strings out of 493029
+ 92662 string characters out of 6136234
  189509 words of memory out of 5000000
- 9985 multiletter control sequences out of 15000+600000
+ 9986 multiletter control sequences out of 15000+600000
  15232 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  29i,6n,35p,281b,441s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -772,10 +777,10 @@ ype1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super
 /sfrm1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm2488.pfb></usr/
 share/texmf/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/texmf/fonts/ty
 pe1/public/cm-super/sftt1200.pfb>
-Output written on rapport.pdf (12 pages, 271062 bytes).
+Output written on rapport.pdf (13 pages, 274877 bytes).
 PDF statistics:
- 214 PDF objects out of 1000 (max. 8388607)
- 186 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 171 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 224 PDF objects out of 1000 (max. 8388607)
+ 195 compressed objects within 2 object streams
+ 36 named destinations out of 1000 (max. 500000)
+ 179 words of extra memory for PDF output out of 10000 (max. 10000000)
 

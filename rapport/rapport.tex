@@ -373,6 +373,67 @@ Schéma de compilation: context = (expr1 = expr2);
   tableau[context][0] <- reg[1]
 \end{verbatim}
 
+\subsection{Relation d'ordre: > et <}
+Pour calculer la relation d'ordre a > b, il suffit simplement de faire une division entière.
+Si a/b > 0 alors la relation est vraie, cependant, il y a certaines mesures à prendre,
+il faut aussi vérifier le cas où a = b nous réutilisons la code IASTeq. De plus, dans le cas ou le dénominateur b = 0, nous divisons
+par 0, pour palier cela le calcul à considérer sera (a+1)/(b+1). Cela ne change pas la relation car si a/b > 0 alors (a+1)/(b+1) aussi.
+\\ \\
+Schéma de compilation: context = (expr1 / expr2)
+\begin{verbatim}
+  int contextarg1 = indVar++;
+  allocateVar();
+  int contextarg2 = indVar++;
+  allocateVar();
+  
+  tableau[contextarg1][0] <- expr1
+  tableau[contextarg2][0] <- expr2
+  reg[1] <- tableau[contextarg1][0]
+  reg[2] <- tableau[contextarg2][0]
+    
+  //on ajoute 1 pour eviter la division par 0
+  reg[3] <- 1
+  reg[1] <- reg[1] + reg[3]
+  reg[2] <- reg[2] + reg[3]
+    
+  //si reg[1]/reg[2] = 0 alors reg[1] < reg[2] car c'est une division entiere
+  reg[3] <- reg[1]/reg[2]
+  reg[0] <- 0
+  reg[4] <- 1
+  reg[0] <- if reg[3] != 0 then reg[4] else reg[0]
+    
+  //on verifie que reg[1] != reg[2]
+  //ce sont les mêmes opérations que pour IASTeq
+  reg[3] <- NAND(reg[2], reg[2])
+  reg[4] <- 1
+  reg[3] <- reg[3] + reg[4]
+  reg[1] <- reg[3] + reg[1]
+  reg[2] <- 1
+  reg[3] <- 0
+  
+  reg[2] <- if reg[1] != 0 then reg[3] else reg[2]
+  reg[1] <- 0
+  reg[0] <- if reg[2] != 0 then reg[1] else reg[0]
+    
+  tableau[context][0] <- reg[0]
+		
+\end{verbatim}
+Le code pour l'operation < est identique sauf que l'on change:
+\begin{verbatim}
+ tableau[contextarg2][0] <- expr1
+ tableau[contextarg1][0] <- expr2
+\end{verbatim}
+
+\subsection{Or}
+\subsection{And}
+\subsection{Not}
+\subsection{Operation arithmétique}
+\subsection{Alternative}
+\subsection{Binding}
+\subsection{Ident}
+\subsection{Integer}
+
+
 
 \end{document}
 
