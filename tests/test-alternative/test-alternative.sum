@@ -1,0 +1,27 @@
+if 1
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM ALTERNATIVE\n"
+}
+
+if 10
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM ALTERNATIVE\n"
+}
+
+if 0
+then {
+  print "PROBLEM ALTERNATIVE\n"
+} else {
+  print "WORKING !\n"
+}
+
+if 10 AND 10
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM ALTERNATIVE\n"
+}

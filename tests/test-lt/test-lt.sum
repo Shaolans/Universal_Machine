@@ -1,0 +1,28 @@
+if 1<1
+then {
+  print "PROBLEM LT\n"
+}else{
+  print "WORKING !\n"
+}
+
+if 10 < 0
+then {
+  print "PROBLEM LT\n"
+}else{
+  print "WORKING !\n"
+}
+
+
+if 0 < 10
+then {
+  print "WORKING !\n"
+}else{
+  print "PROBLEM LT\n"
+}
+
+if 10 < 30+10
+then {
+  print "WORKING !\n"
+}else{
+  print "PROBLEM LT\n"
+}

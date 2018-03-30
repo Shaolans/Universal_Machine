@@ -1,0 +1,28 @@
+if 1=1
+then {
+  print "WORKING !\n"
+}else{
+  print "PROBLEM EQ\n"
+}
+
+if 0=0
+then {
+  print "WORKING !\n"
+}else{
+  print "PROBLEM EQ\n"
+}
+
+
+if 10+1=9+2
+then {
+  print "WORKING !\n"
+}else{
+  print "PROBLEM EQ\n"
+}
+
+if 0 = 10
+then {
+  print "PROBLEM EQ\n"
+}else{
+  print "WORKING !\n"
+}
