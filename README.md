@@ -26,7 +26,7 @@ Le compilateur se trouvera sur le chemin ./sum/SUM/jar
 ## Executer le projet
 ### Executer la machine universelle
 La machine universelle s'éxecute comme ceci:  
-./universal_machine <input.file>  
+./universal_machine <input.um>  
 Par exemple:  
 Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:  
 ./universal_machine ./um/ressources/sandmarks.umz  
