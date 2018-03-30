@@ -1,0 +1,38 @@
+@startuml
+
+interface IAST
+interface IASTstatement
+interface IASTexpression
+interface IASTprogram
+IAST <|-- IASTstatement
+IAST <|-- IASTprogram
+IASTstatement <|-- IASTexpression
+
+interface IASTscan
+interface IASTalternative
+interface IASTbinding
+interface IASTprint
+
+IASTstatement <|-- IASTscan
+IASTstatement <|-- IASTalternative
+IASTstatement <|-- IASTbinding
+IASTstatement <|-- IASTprint
+
+interface IASTbinOp
+interface IASTunaryOp
+interface IASTconstInteger
+interface IASTconstString
+interface IASTident
+
+IASTexpression <|-- IASTbinOp
+IASTexpression <|-- IASTunaryOp
+IASTexpression <|-- IASTconstInteger
+IASTexpression <|-- IASTconstString
+IASTexpression <|-- IASTident
+
+interface IASTnot
+IASTunaryOp <|-- IASTnot
+
+
+
+@enduml 

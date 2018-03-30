@@ -1,0 +1,24 @@
+@startuml
+
+interface IASTexpression
+interface IASTbinOp
+IASTexpression <|-- IASTbinOp
+
+interface IASTadd
+interface IASTdiv
+interface IASTmul
+interface IASTor
+interface IASTgt
+interface IASTlt
+interface IASTeq
+
+IASTbinOp <|-- IASTadd
+IASTbinOp <|-- IASTdiv
+IASTbinOp <|-- IASTmul
+IASTbinOp <|-- IASTor
+IASTbinOp <|-- IASTgt
+IASTbinOp <|-- IASTlt
+IASTbinOp <|-- IASTeq
+
+
+@enduml 

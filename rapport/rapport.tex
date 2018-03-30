@@ -213,9 +213,166 @@ tableaux plutôt qu'une implantation de liste de tableaux.
 
 
 \chapter{Compilateur S-UM}
+\section{Choix d'outils}
+Dans ce projet, nous avons initialement choisit d'écrire le compilateur en C en utilisant les outils Yacc et Flex. Cependant,
+nous avons finalement choisit d'écrire le programme en JAVA avec ANTLR 4.4. Celui-ci, bien qu'il soit plus long à écrire, il a
+l'avantage d'être simple à l'utilisation.
+Le début de l'ancien compilateur C se trouve dans le dossier ./archives/compiler\_old\_c.
+Le compilateur que nous utilisons et décrirons par la suite est le compilateur JAVA utilisant ANTLR se trouve dans le dossier 
+./sum.
 
+\section{Grammaire}
+La grammaire se situe dans le chemin ./sum/SUM/ANTLRGrammar.g4 et suit la notation de la Forme de Backus-Naur (BNF).
+Cette grammaire est capable de reconnaître le langage S-UM.
+\begin{verbatim}
+grammar SUMgrammar;
 
+prog returns [sum.interfaces.iast.IASTprogram node]
+	: (stmts+=stmt ';'?) * EOF
+	;
+	
+stmt returns [sum.interfaces.iast.IASTstatement node]
+	: expr #Expression
+	| 'let' var=IDENT '='? val=expr? #Binding
+	| 'print' val=expr #Print
+	| 'scan' var=IDENT #Scan
+	| 'if' cond=expr 'then' '{' (cons+=stmt ';'?)* '}'
+	 'else' '{' (alt+=stmt ';'?)* '}' #Alternative
+	;
+	
+expr returns [sum.interfaces.iast.IASTexpression node]
+	: intConst=INT # ConstInteger
+	| stringConst=STRING # ConstString
+	| ident=IDENT #Ident
+	| arg1=expr op=('*' | '/' | '+') arg2=expr #BinOp
+	| arg1=expr op=('<' | '=' | '>') arg2=expr #RelationBinOp
+	| arg1=expr op=('AND' | 'OR') arg2=expr #LogicBinOp
+	| 'NOT' arg=expr #LogicUnOp;
+	
+INT : [0-9]+;
+IDENT : [a-zA-Z_] [a-zA-Z0-9_]*;
+STRING : '"' (ESC | ~["\\])*  '"';
+ESC : '\\' [\\nrt"];
+LINE_COMMENT : '//' (~[\r\n])* -> skip;
+COMMENT : '/*' ('*' ~[/] | ~[*])* '*/' -> skip;
+SPACE : [ \t\r\n]+ -> skip;
+\end{verbatim}
 
+Ainsi un programme correspond à un ensemble de statements, ces statements sont quant à eux soit:
+\begin{itemize}
+ \item une affectation
+ \item un print
+ \item un scan
+ \item une alternative
+ \item une expression
+\end{itemize}
+Les expressions peuvent être soit:
+\begin{itemize}
+ \item une constante entière ou chaîne de caractères
+ \item un ident
+ \item une opération arithmétique binaire entre deux expressions
+ \item une opération de relation binaire entre deux expressions
+ \item une opération logique binaire entre deux expressions
+ \item une opération logique unaire entre deux expressions
+\end{itemize}
+
+L'éxécution de l'outil ANTLR sur ce fichier génère plusieurs classes JAVA permettant la reconnaissance du langage.
+
+\section{Arbre syntaxique abstrait}
+Afin de pouvoir générer un arbre syntaxique abstrait nous avons définit des interfaces dont l'implantation de celle-ci ne sont que
+des conteneurs.
+La déclaration des interfaces se trouvent dans le dossier ./sum/SUM/src/sum/interface et l'implantation dans le dossier
+./sum/SUM/src/sum/ast.
+
+\begin{center}
+ \includegraphics[scale=0.55]{./plantuml/ast_general_structure.png}
+ \includegraphics[scale=0.70]{./plantuml/ast_binop_structure.png}
+ \begin{figure}
+  \caption{Diagramme de classe de la structure générale}
+ \end{figure}
+\end{center}
+
+Pour générer l'arbre syntaxique abstrait nous avons implantée la classe SUMListener qui réalise l'interface SUMgrammarListener, elle
+permet notamment d'appliquer une action à chaque trait du langage reconnut. Nous avons aussi implanté la classe SUMParser qui
+initialise et effectue les appels correct afin de construire l'arbre syntaxique abstrait.
+Ces classes sont disponibles dans le chemin ./sum/SUM/src/sum/parser.
+
+\section{Compilation vers le langage S-UM}
+\subsection{Design Pattern Visitor}
+Pour pouvoir parcourir et traité chaque noeud de l'arbre syntaxique abstrait nous avons utilisé le design pattern visitor, ce qui est
+très adapté lorsque nous souhaitons faire de l'interpretation/compilation en langage objet. Ainsi, tout les noeuds de l'AST possède
+une méthode \textit{public void accept(IASTvisitor visitor)}. L'implantation de la classe Compiler permet lors du parcours de l'AST,
+de le compiler.
+
+\subsection{Description générale de la compilation (Class Compiler)}
+Les variables suivantes servent à:
+\begin{itemize}
+ \item NO\_CONTEXT $\rightarrow$ Indiqué lors d'un visit si son évaluation doit être stocké
+ \item numInst $\rightarrow$ Permet de savoir le nombre d'instructions écrit (utile pour l'alternative)
+ \item env $\rightarrow$ Une Map permettant de garder en mémoire le nom de la variable et l'indice du tableau dans lequel il doit être
+ stocké
+ \item fos $\rightarrow$ Le flux de sorti
+\end{itemize}
+
+\subsection{Stockage des calculs}
+Nous avons remarqué qu'il n'y a que 8 registres disponibles, nous sommes donc limités dans le stockage des calculs intermédiaires. Nous
+devions, donc trouver un moyen de stockage. Une propriété intéressante est que lors du chargement du programme, seul le tableau[0] est occupé,
+ainsi nous savons que les indices libres commencent à partir de 1, de ce fait nous pouvons à l'aide d'une variable entière indVar 
+connaitre l'indice de la prochaine allocation puisqu'à chaque allocation on effectue indVar++. Il est important de noter que pour cela 
+fonctionne la desallocation ne se fera qu'à la sortie du programme, puisque nous incrémentons à chaque allocation indVar. \\
+Cependant, il est possible de désallouer facilement lorsque nous en avons plus besoin, il suffit de garder les indices désalloués dans
+une liste, de la même manière que dans la machine universelle. Bien que simple à réaliser, pour des raisons de temps nous ne l'avons pas implanté.
+Chaque méthode visit possède un argument \textit{int context}, celui-ci indique si différent de \textit{NO\_CONTEXT} le tableau 
+dans lequel le résultat doit être stocké.
+La méthode allocateVar() traduit en langage UM, l'instruction d'allocation de taille 1 (puisque l'on stocke unique une valeur).
+
+\subsection{Traduction en instruction UM}
+Traduire en directement en binaire UM n'est pas chose aisé, c'est pour cela que nous avons définit des méthodes pour pouvoir traduire
+plus facilement.
+Les méthodes ci-dessous permettent:
+\begin{itemize}
+ \item public void writeOperation(int op, int regA, int regB, int regC) $\rightarrow$ Permet d'écrire l'opération op avec les registres
+ a,b et c en binaire UM dans le fichier de sorti, on écrit des bytes en utilisant des décalages. (Plus de détail dans le fichier Compiler
+ en commentaire).
+ \item public void writeSpecialOperation(int regA, int value) $\rightarrow$ Permet de charger une valeur non signé sur 25 bits dans 
+ le registre A. (Plus de détail dans le fichier Compiler en commentaire)
+ \item public void fetchIntoReg(int i, int reg) $\rightarrow$ Récupère une valeur simple situé dans le plateau[i][0] dans le cas d'une variable
+ et l'ajoute dans le registre reg.
+ \item public void putIntoArray(int i, int reg) $\rightarrow$ Ajoute dans le plateau[i][0] la valeur dans le registre d'indice reg.
+ \item public void allocateVar() $\rightarrow$ Alloue un plateau de taille 1 pour une variable.
+\end{itemize}
+
+\subsection{Egalité}
+Ecrire les relation binaires n'était pas chose aisée, en effet, nous étions très limités dans les opérations possibles.
+Cependant, une remarque importante, soit a un entier NAND(a,a) à pour effet d'inverser les bits. Les 0 deviennent 1 et les 1 deviennent
+0. \\
+Ainsi nous pouvons donc observer que a + NAND(a,a) = 0b11..11, tout les bits sont positionnés à 1. \\
+Donc en additionnant ce résultat à 1, on dépasse 32 bits et donc on retourne a 0b00..00. \\
+Donc a + NAND(a,a) + 1 = 0b00..00. \\
+On peut donc vérifier l'égalité a = b par: \\
+si a + NAND(b,b) + 1 = 0b00..00 alors a = b sinon a != b.
+\\ \\
+Schéma de compilation: context = (expr1 = expr2);
+
+\begin{verbatim}
+  int contextarg1 = indVar++;
+  allocateVar();
+  int contextarg2 = indVar++;
+  allocateVar();
+  tableau[contextarg1][0] <- expr1
+  tableau[contextarg2][0] <- expr2
+  reg[0] <- tableau[contextarg1][0]
+  reg[1] <- tableau[contextarg2][0]
+  reg[2] <- NAND(1,1)
+  reg[3] <- 1
+  reg[2] <- reg[2] + reg[3]
+  reg[0] <- reg[0] + reg[2]
+  reg[1] <- 1
+  reg[2] <- 0
+  reg[1] <- if reg[0] = 0 then reg[1] else reg[2]
+  tableau[context][0] <- reg[1]
+\end{verbatim}
 
 
 \end{document}
+
