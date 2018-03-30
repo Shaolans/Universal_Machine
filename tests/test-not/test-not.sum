@@ -1,0 +1,20 @@
+if NOT 1
+then {
+  print "PROBLEM NOT\n"
+} else {
+  print "WORKING !\n"
+}
+
+if NOT 132
+then {
+  print "PROBLEM NOT\n"
+} else {
+  print "WORKING !\n"
+}
+
+if NOT 0
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM NOT\n"
+}

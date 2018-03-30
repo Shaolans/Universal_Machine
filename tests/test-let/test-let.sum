@@ -1,0 +1,5 @@
+let var = 43*2+11
+print var
+print "\n"
+print var + 25
+print "\n"

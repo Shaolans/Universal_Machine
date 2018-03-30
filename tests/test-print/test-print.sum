@@ -1,0 +1,7 @@
+print "Test\n"
+print 42
+print "\n"
+print 4242
+print "\n"
+print 43*2+11
+print "\n"

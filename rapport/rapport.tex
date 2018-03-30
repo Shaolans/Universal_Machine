@@ -355,10 +355,10 @@ si a + NAND(b,b) + 1 = 0b00..00 alors a = b sinon a != b.
 Schéma de compilation: context = (expr1 = expr2);
 
 \begin{verbatim}
-  int contextarg1 = indVar++;
-  allocateVar();
-  int contextarg2 = indVar++;
-  allocateVar();
+  int contextarg1 = indVar++
+  allocateVar()
+  int contextarg2 = indVar++
+  allocateVar()
   tableau[contextarg1][0] <- expr1
   tableau[contextarg2][0] <- expr2
   reg[0] <- tableau[contextarg1][0]
@@ -381,10 +381,10 @@ par 0, pour palier cela le calcul à considérer sera (a+1)/(b+1). Cela ne chang
 \\ \\
 Schéma de compilation: context = (expr1 / expr2)
 \begin{verbatim}
-  int contextarg1 = indVar++;
-  allocateVar();
-  int contextarg2 = indVar++;
-  allocateVar();
+  int contextarg1 = indVar++
+  allocateVar()
+  int contextarg2 = indVar++
+  allocateVar()
   
   tableau[contextarg1][0] <- expr1
   tableau[contextarg2][0] <- expr2
@@ -425,14 +425,180 @@ Le code pour l'operation < est identique sauf que l'on change:
 \end{verbatim}
 
 \subsection{Or}
-\subsection{And}
-\subsection{Not}
-\subsection{Operation arithmétique}
-\subsection{Alternative}
-\subsection{Binding}
-\subsection{Ident}
-\subsection{Integer}
+La traduction du OR est relativement simple, il suffit de calculer le membre gauche et droit.
+A l'aide de l'opération 0 (mouvement conditionnel), nous déterminons si le résultat est 1 (vrai) ou faux (0).
+\\ \\
+Schéma de compilation: context = (expr1 OR expr2)
+\begin{verbatim}
+  int contextarg1 = indVar++
+  allocateVar()
+  int contextarg2 = indVar++
+  allocateVar()
+  tableau[contextarg1][0] <- expr1
+  tableau[contextarg2][0] <- expr2
+  reg[1] <- tableau[contextarg1][0]
+  reg[2] <- tableau[contextarg2][0]
+  reg[0] <- 0
+  reg[3] <- 1
+  //reg[1] et reg[2] contiennent le resultat de membre gauche et droit de OR
+  //reg[0] contient 0, si reg[1] ou reg[2] contiennent la valeur != 0 alors
+  //on met dans reg[0] la valeur 1, donc ceci est bien un OR
+  reg[0] <- if reg[1] != 0 then reg[3] else reg[0]
+  reg[0] <- if reg[1] != 0 then reg[2] else reg[0]
+  tableau[context][0] <- reg[0]
+\end{verbatim}
 
+\subsection{And}
+La traduction du And est très similaire à la traduction du Or, en effet, il y a juste une modification au niveau des mouvements
+conditionnels. En effet, nous faisons un ``chainage'' de mouvement conditionnel, ainsi reg[1] et reg[2] (registres qui contiennent le
+résultat de l'évaluation des expressions) doivent tout les deux différents de 0 pour que le résultat soit 1 (vrai).
+\\ \\
+Schéma de compilation: context = (expr1 AND expr2)
+\begin{verbatim}
+  int contextarg1 = indVar++
+  allocateVar()
+  int contextarg2 = indVar++
+  allocateVar()
+  tableau[contextarg1][0] <- expr1
+  tableau[contextarg2][0] <- expr2
+  reg[2] <- expr1
+  reg[3] <- expr2
+  reg[4] <- 1
+  reg[5] <- 0
+  reg[1] <- 0
+  reg[0] <- 0
+  //reg[2] et reg[3] contiennent le resultat du membre gauche et droit de AND
+  //reg[1] = 0 si reg[2] != 0 alors reg[1] = 1
+  //reg[0] = 0 si reg[3] != 0 alors reg[0] = reg[1]
+  //donc si on a 0 AND 1, reg[0] = 0 etc
+  reg[1] <- if reg[2] != 0 then reg[4] else reg[1]
+  reg[0] <- if reg[3] != 0 then reg[1] else reg[0]
+  tableau[context][0] <- reg[0]
+\end{verbatim}
+
+\subsection{Not}
+La traduction du Not en UM est très simple, nous utilisons juste un mouvement conditionnel, si la valeur est différent de 0 alors 1 
+sinon 0.
+\\ \\
+Schéma de compilation: context = Not (expr)
+\begin{verbatim}
+  int argcontext = indVar++
+  allocateVar()
+  tableau[argcontext][0] <- expr
+  reg[2] <- tableau[argcontext][0]
+  reg[0] <- 1
+  reg[1] <- 0
+  //si le resultat est != 0 alors on met 1 sinon 0
+  reg[0] <- if reg[2] != 0 then reg[1] else reg[0]
+  tableau[context][0] <- reg[0]
+\end{verbatim}
+
+\subsection{Operation arithmétique}
+Les opérations arithmétiques correspondent juste à un chargement de valeur, l'application de l'opérande et au stockage du résultat.
+\\ \\
+Schéma de compilation: context = (expr1 [+*/] expr2)
+\begin{verbatim}
+  int contextarg1 = indVar++;
+  allocateVar();
+  int contextarg2 = indVar++;
+  allocateVar();
+  tableau[contextarg1][0] <- expr1
+  tableau[contextarg2][0] <- expr2
+  reg[0] <- tableau[contextarg1][0]
+  reg[1] <- tableau[contextarg2][0]
+  reg[2] <- reg[0] [+*/] reg[1]
+  tableau[context][0] <- reg[2]
+\end{verbatim}
+
+
+\subsection{Alternative}
+L'alternative à une compilation très intéressante à étudier, nous avons essayé dans un premier temps de calculer dynamique le nombre
+d'instruction à sauter pour les conditions. Cependant cela n'a pas été concluant, nous avons donc décidé d'alloué les blocs du 
+conséquent et de l'alternative à une taille fixe, ce qui rend la détermination des sauts d'adresses relativement plus simple.
+Ainsi, l'alternative utilise les opérations de mouvements conditionnels pour déterminer quel saut il faut éffectuer mais aussi des
+opérations de chargement de programme permettant de produire des sauts d'instructions.
+Nous utilisons ici une variable numInst afin de déterminer les adresses de sauts, numInst est incrémenté à chaque opération écrite.
+\\ \\
+Schéma de compilation: if expr1 then expr2 else expr3
+\begin{verbatim}
+  int DEFAULT_SIZE = 4096
+  int condctx = indVar++
+  allocateVar()
+  tableau[condctx][0] <- expr1
+  
+  //suivant la valeur de la condition, on saute soit a l'adresse du then
+  //ou alors a l'adresse du else
+  //les blocs de then et else sont fixés, ce qui permet de calculer
+  //directement les adresses de sauts
+  reg[1] <- numInst+8 //then
+  reg[0] <- numInst+8+DEFAULT_SIZE-1 //else
+  reg[2] <- tableau[condctx][0]
+  
+  reg[0] <- if reg[2] != 0 then reg[1] else reg[0]
+  reg[1] <- 0
+  
+  //on charge le programme tableau[reg[1]] et pointe sur la valeur de reg[0]
+  //l'instruction qui sera éxécuté au tour prochain sera tableau[reg[1]][reg[0]]
+  LOAD_PROG(reg[0], reg[1])
+    
+  //instructions du then
+  int start = numInst;
+  NO_CONTEXT <- expr2
+    
+  //saut hors du if
+  reg[1] <- 0
+  reg[0] <- start+2*DEFAULT_SIZE
+  LOAD_PROG(reg[0],reg[1])
+    
+  //on remplit le reste du bloc avec des NOP
+  while(numInst < start+DEFAULT_SIZE) {
+    reg[0] <- 0
+  }
+    
+  //instructions du else
+  NO_CONTEXT <- expr3
+    
+  //on remplit le reste du bloc avec des NOP
+  while(numInst < start+2*DEFAULT_SIZE) {
+    reg[0] <- 0
+  }
+\end{verbatim}
+
+
+\subsection{Binding}
+Le binding est une déclaration de variable, ainsi nous l'ajoutons dans l'environnement de compilation dans une map le nom et l'indice
+du tableau dont on l'a attribué, s'il est déclaré avec une expression le calcul de l'expression y sera stocké.
+\\ \\
+Schéma de compilation: let var = expr
+\begin{verbatim}
+  int varcontext = indVar++
+  allocateVar()
+  env.put(var, varcontext)
+  if existExpr() then tableau[varcontext][0] <- expr
+\end{verbatim}
+
+\subsection{Ident}
+Les ident correspondent aux noms de variable, nous gardons dans l'environnement de compilation une map contenant le nom de la variable
+et l'indice du tableau dans laquelle est stocké la variable.
+\\ \\
+Schéma de compilation: context = expr
+\begin{verbatim}
+  int varcontext = env.get(expr)
+  reg[0] <- tableau[varcontext][0]
+  tableau[context] <- reg[0]
+\end{verbatim}
+
+
+\subsection{Integer}
+La traduction de la constante est trivial, cela correspond au chargement de la valeur immédiate dans une case du tableau.
+\\ \\
+Schéma de compilation: context = expr
+\begin{verbatim}
+  reg[0] <- expr
+  tableau[context][0] <- reg[0]
+\end{verbatim}
+
+\section{Tests}
 
 
 \end{document}

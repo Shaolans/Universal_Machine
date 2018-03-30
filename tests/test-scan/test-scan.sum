@@ -1,0 +1,4 @@
+let x
+scan x
+print x
+print "\n"

@@ -1,0 +1,6 @@
+print 96+1
+print "\n"
+print 90+5+2+1
+print "\n"
+print 20+32+40+5+25
+print "\n"

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.1.30)  30 MAR 2018 13:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.1.30)  30 MAR 2018 20:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -683,7 +683,7 @@ Overfull \hbox (41.98112pt too wide) in paragraph at lines 282--286
 ns le dossier ./sum/SUM/src/sum/ast. 
  []
 
-<./plantuml/ast_general_structure.png, id=156, 975.645pt x 499.8675pt>
+<./plantuml/ast_general_structure.png, id=201, 975.645pt x 499.8675pt>
 File: ./plantuml/ast_general_structure.png Graphic file (type png)
 
 <use ./plantuml/ast_general_structure.png>
@@ -691,7 +691,7 @@ Package pdftex.def Info: ./plantuml/ast_general_structure.png used on input lin
 e 288.
 (pdftex.def)             Requested size: 536.60641pt x 274.92796pt.
 
-<./plantuml/ast_binop_structure.png, id=157, 756.8275pt x 283.0575pt>
+<./plantuml/ast_binop_structure.png, id=202, 756.8275pt x 283.0575pt>
 File: ./plantuml/ast_binop_structure.png Graphic file (type png)
 
 <use ./plantuml/ast_binop_structure.png>
@@ -750,21 +750,67 @@ Underfull \hbox (badness 10000) in paragraph at lines 377--383
  []
 
 [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 428.
- [12]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 428.
+Underfull \hbox (badness 10000) in paragraph at lines 428--432
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 452--457
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--484
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 497--500
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 515--523
+
+ []
+
+
+Overfull \hbox (4.77652pt too wide) in paragraph at lines 565--565
+[]  \T1/cmtt/m/n/12 //l'instruction qui sera éxécuté au tour prochain sera tabl
+eau[reg[1]][reg[0]][] 
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 569--573
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 581--585
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 593--596
+
+ []
+
+[15]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 604.
+ [16]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 604.
  (./rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 428.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 428.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 604.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 604.
 Package rerunfilecheck Info: File `rapport.out' has not changed.
-(rerunfilecheck)             Checksum: 0D92FACA5C7F7557B226A2C98062C892;1439.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 428.
+(rerunfilecheck)             Checksum: D8F85002784AD58F490A0C7F72BE5149;1991.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 604.
  ) 
 Here is how much of TeX's memory you used:
- 6550 strings out of 493029
- 92662 string characters out of 6136234
- 189509 words of memory out of 5000000
- 9986 multiletter control sequences out of 15000+600000
+ 6572 strings out of 493029
+ 92996 string characters out of 6136234
+ 189510 words of memory out of 5000000
+ 9995 multiletter control sequences out of 15000+600000
  15232 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  29i,6n,35p,281b,441s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -777,10 +823,10 @@ ype1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super
 /sfrm1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm2488.pfb></usr/
 share/texmf/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/texmf/fonts/ty
 pe1/public/cm-super/sftt1200.pfb>
-Output written on rapport.pdf (13 pages, 274877 bytes).
+Output written on rapport.pdf (17 pages, 285733 bytes).
 PDF statistics:
- 224 PDF objects out of 1000 (max. 8388607)
- 195 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 179 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 291 PDF objects out of 1000 (max. 8388607)
+ 257 compressed objects within 3 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 251 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,0 +1,27 @@
+if 1 OR 1
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM OR\n"
+}
+
+if 0 OR 1
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM OR\n"
+}
+
+if 1 OR 0
+then {
+  print "WORKING !\n"
+} else {
+  print "PROBLEM OR\n"
+}
+
+if 0 OR 0
+then {
+  print "PROBLEM OR\n"
+} else {
+  print "WORKING !\n"
+}
