@@ -25,21 +25,21 @@ Le compilateur se trouvera sur le chemin ./sum/SUM/jar
 
 ## Executer le projet
 ## Executer la machine universelle
-La machine universelle s'éxecute comme ceci:
-./universal_machine <input.file>
-Par exemple:
-Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:
-./universal_machine ./um/ressources/sandmarks.umz
-ou
-./universal_machine ./tests/test-print/test-print.um
+La machine universelle s'éxecute comme ceci:  
+./universal_machine <input.file>  
+Par exemple:  
+Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:  
+./universal_machine ./um/ressources/sandmarks.umz  
+ou  
+./universal_machine ./tests/test-print/test-print.um  
 
 ## Compiler un fichier SUM vers le langage UM
-Pour compiler un fichier, éffectuez cette commande:
-java -jar SUMCompiler.jar <input.sum> <output.um> [--verbose-asm || --verbose]
-Par exemple:
-Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:
-java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um --verbose-asm
-ou
-java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um
-ou
-java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um --verbose
+Pour compiler un fichier, éffectuez cette commande:  
+java -jar SUMCompiler.jar <input.sum> <output.um> [--verbose-asm || --verbose]  
+Par exemple:  
+Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:  
+java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um --verbose-asm  
+ou  
+java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um  
+ou  
+java -jar SUMCompiler.jar ./tests/test-print/test-print.sum ./tests/test-print/test-print.um --verbose  
