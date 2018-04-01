@@ -3,7 +3,7 @@
 ## But
 Ce projet à pour but, l'implantation de la machine universelle dont les spécifications
 proviennent du concours de programmation ICFP de 2006.
-Ce trouve aussi, une implantation d'un compilateur du langage S-UM vers le langage binaire comprit par la machine universelle.
+Se trouve aussi, une implantation d'un compilateur du langage S-UM vers le langage binaire comprit par la machine universelle.
 
 ## Compiler le projet
 Le projet contient à la racine la machine virtuelle (universal_machine) et le compilateur S-UM (SUMCompiler.jar).
