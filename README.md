@@ -29,7 +29,7 @@ La machine universelle s'éxecute comme ceci:
 ./universal_machine <input.um>  
 Par exemple:  
 Si vous êtes à la racine du projet vous pouvez éffectuer la commande suivante:  
-./universal_machine ./um/ressources/sandmarks.umz  
+./universal_machine ./um/ressources/sandmark.umz  
 ou  
 ./universal_machine ./tests/test-print/test-print.um  
 
