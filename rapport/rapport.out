@@ -6,7 +6,7 @@
 \BOOKMARK [1][-]{section.1.1}{Structure}{chapter.1}% 6
 \BOOKMARK [1][-]{section.1.2}{Fonctions}{chapter.1}% 7
 \BOOKMARK [1][-]{section.1.3}{Interpr\351tation du langage}{chapter.1}% 8
-\BOOKMARK [1][-]{section.1.4}{Performance}{chapter.1}% 9
+\BOOKMARK [1][-]{section.1.4}{Performances}{chapter.1}% 9
 \BOOKMARK [1][-]{section.1.5}{Implantation de la machine universelle par liste}{chapter.1}% 10
 \BOOKMARK [0][-]{chapter.2}{Compilateur S-UM}{}% 11
 \BOOKMARK [1][-]{section.2.1}{Choix d'outils}{chapter.2}% 12
@@ -14,7 +14,7 @@
 \BOOKMARK [1][-]{section.2.3}{Arbre syntaxique abstrait}{chapter.2}% 14
 \BOOKMARK [1][-]{section.2.4}{Compilation vers le langage S-UM}{chapter.2}% 15
 \BOOKMARK [2][-]{subsection.2.4.1}{Design Pattern Visitor}{section.2.4}% 16
-\BOOKMARK [2][-]{subsection.2.4.2}{Description g\351n\351rale de la compilation \(Class Compiler\)}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.2}{Description g\351n\351rale de la compilation \(Classe Compiler\)}{section.2.4}% 17
 \BOOKMARK [2][-]{subsection.2.4.3}{Stockage des calculs}{section.2.4}% 18
 \BOOKMARK [2][-]{subsection.2.4.4}{Traduction en instruction UM}{section.2.4}% 19
 \BOOKMARK [2][-]{subsection.2.4.5}{Egalit\351}{section.2.4}% 20
