@@ -14,13 +14,13 @@ suivez la description suivante.
 Depuis la racine du projet:
 1. cd um
 2. make clean
-3. make
+3. make  
 La machine universelle se trouvera dans ./um
 
 ### Compiler le compilateur S-UM
 1. cd sum/SUM
 2. ant clean
-3. ant jar
+3. ant jar  
 Le compilateur se trouvera sur le chemin ./sum/SUM/jar
 
 ## Executer le projet
